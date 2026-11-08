@@ -55,7 +55,7 @@ public class AnomalyDirector : MonoBehaviour
 
     public void ResetAll()
     {
-        foreach (var p in props) p.Resolve();
+        foreach (var p in props) { p.Resolve(); p.ResetCooldown(); }
         StopMidDay();
     }
 
@@ -112,7 +112,7 @@ public class AnomalyDirector : MonoBehaviour
         var candidates = new List<Prop>();
         foreach (var p in props)
         {
-            if (!p.CanBecomeAnomaly || p.IsAnomalous || !p.gameObject.activeInHierarchy) continue;
+            if (!p.CanBecomeAnomaly || p.IsAnomalous || p.OnCooldown || !p.gameObject.activeInHierarchy) continue;
             if (offscreen && rooms != null && rooms.IsVisible(p.transform.position)) continue;
             candidates.Add(p);
         }
@@ -159,7 +159,7 @@ public class AnomalyDirector : MonoBehaviour
         var any = new List<Prop>();
         foreach (var p in props)
         {
-            if (!p.canBeAnomalous || p.IsAnomalous || !p.gameObject.activeInHierarchy) continue;
+            if (!p.canBeAnomalous || p.IsAnomalous || p.OnCooldown || !p.gameObject.activeInHierarchy) continue;
             any.Add(p);
             if (rooms != null && rooms.IsVisible(p.transform.position)) visible.Add(p);
         }

@@ -53,6 +53,7 @@ public class Playtest : MonoBehaviour
     {
         var gm = GameManager.Instance;
         var shop = gm.shop;
+        long memStart = System.GC.GetTotalMemory(true); int objStart = Resources.FindObjectsOfTypeAll<Object>().Length;
         yield return new WaitForSecondsRealtime(1.2f);
         Check(gm.mainMenu.IsOpen, "Start screen shows first");
         yield return Shot("00_main_menu");
@@ -232,6 +233,13 @@ public class Playtest : MonoBehaviour
         yield return new WaitForSecondsRealtime(2.5f);
         Check(gm.screens.winScreen.gameObject.activeSelf, $"3 armed days without buying wins (streak {PlayerState.NoPurchaseStreak})");
         yield return Shot("12_win");
+
+        // Memory / drift: after several days nothing should pile up, and every non-anomalous prop must be exactly where the scene put it.
+        long memEnd = System.GC.GetTotalMemory(true); int objEnd = Resources.FindObjectsOfTypeAll<Object>().Length;
+        log.Add($"  memory: managed {memStart / 1024} KB -> {memEnd / 1024} KB, objects {objStart} -> {objEnd}, native {UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong() / 1048576} MB");
+        Check(objEnd - objStart < 200 && memEnd - memStart < 8L * 1024 * 1024, $"No object/memory pile-up over the run (objects +{objEnd - objStart}, managed +{(memEnd - memStart) / 1024} KB)");
+        var drifted = Object.FindObjectsByType<Prop>(FindObjectsInactive.Exclude).Where(p => !p.AtHome).Select(p => p.name).ToList();
+        Check(drifted.Count == 0, "No fixed or normal object is out of place" + (drifted.Count > 0 ? ": " + string.Join(", ", drifted) : ""));
 
         // Lose rule (logic only): owning everything ends the game at bedtime
         foreach (var it in shop.items) PlayerState.TryBuy(it.id, 0);

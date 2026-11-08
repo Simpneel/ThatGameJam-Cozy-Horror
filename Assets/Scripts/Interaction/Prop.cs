@@ -16,6 +16,16 @@ public class Prop : MonoBehaviour
 
     [Header("Anomaly")]
     public bool canBeAnomalous = true;
+    [Tooltip("Days this object rests after its anomaly is found and fixed before it can be picked again.")]
+    public int cooldownDays = 1;
+    int lastAnomalyDay = -100;
+    public bool OnCooldown => PlayerState.Day - lastAnomalyDay <= cooldownDays;
+    public void ResetCooldown() => lastAnomalyDay = -100;
+    [Tooltip("An anomaly left unfound this many days is still fixable but no longer gives a point (3 = found on its day or the 2 days after).")]
+    public int pointExpiryDays = 3;
+    int spawnDay;
+    /// Not anomalous and sitting exactly where the scene put it (used by the playtest to catch drifting objects).
+    public bool AtHome => !initialised || IsAnomalous || ((transform.localPosition - basePos).sqrMagnitude < 1e-6f && Mathf.Abs(Mathf.DeltaAngle(transform.localEulerAngles.z, baseRot)) < 0.01f);
     [Tooltip("Hand-drawn 'wrong' version. Used 90% of the time when set; otherwise one of allowedKinds.")]
     public Sprite anomalySprite;
     [Tooltip("Scale applied while the anomaly sprite is shown (for anomaly art drawn at a different size).")]
@@ -84,10 +94,12 @@ public class Prop : MonoBehaviour
     {
         if (IsAnomalous)
         {
+            bool worthPoint = PlayerState.Day - spawnDay < pointExpiryDays;
             Resolve();
+            lastAnomalyDay = PlayerState.Day; // fixed today: rests through tomorrow
             Sfx.Play(FixedSound, 0.8f, UnityEngine.Random.Range(1.1f, 1.2f));
             Sfx.Play(clickSound, volume * 0.6f, 0.75f);
-            PlayerState.EarnPoint();
+            if (worthPoint) PlayerState.EarnPoint(); // left unfound too long: fixing it no longer pays
             Pop(1.3f);
             return;
         }
@@ -136,6 +148,7 @@ public class Prop : MonoBehaviour
             case AnomalyKind.Tint: sr.color = new Color(1f, 0.45f, 0.45f, normalColor.a); break;
             case AnomalyKind.Vanish: SetVisible(false); break; // collider stays: click the empty spot to bring it back
         }
+        spawnDay = PlayerState.Day;
         Anomaly = kind;
         poseDirty = true;
         return true;

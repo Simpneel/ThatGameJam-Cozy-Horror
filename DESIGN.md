@@ -45,7 +45,8 @@ The house starts partly empty; buying items on the computer fills it, and the th
 |---|---|---|
 | Starting points | 2 | GameManager |
 | Points needed to arm the win streak | 5 | GameManager |
-| Points per anomaly fixed | 1 | Prop |
+| Points per anomaly fixed | 1, any type. Unfound for 3 days (found after its day + 2) = fixable but worth 0 | Prop (pointExpiryDays) |
+| Anomaly cooldown | once found and fixed, an object rests 1 full day before it can go wrong again | Prop (cooldownDays) |
 | Max purchases per day | 4 | Shop |
 | New anomalies per day | 3 on Day 2, +2 each day (3, 5, 7, 9), max 10 at once | AnomalyDirector |
 | Mid-day surprises (in a room you're not looking at) | from Day 3: (day − 2) of them, max 4, every 15–35 s | AnomalyDirector |
