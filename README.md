@@ -6,7 +6,7 @@
 
 1. Open the project in **Unity 6000.6.7f1**. The first open imports everything and takes a few minutes.
 2. Open `Assets/Scenes/Game.unity` and press **Play**.
-3. Or make a standalone build: **Cozy Horror ▸ Build ▸ Windows (Development)**. It goes to `Builds/Windows/`.
+3. Or make a standalone build: **Cozy Horror ▸ Build ▸ Windows (Development)** goes to `Builds/Dev/` (debug keys on); **Build ▸ Windows** and **Build ▸ WebGL (itch.io)** make the release builds in `Builds/Windows/` and `Builds/WebGL/`.
 
 **Controls:** click objects; ← → arrows (or A/D) change rooms; Esc pauses.
 

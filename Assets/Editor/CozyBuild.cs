@@ -9,7 +9,7 @@ public static class CozyBuild
     static readonly string[] Scenes = { "Assets/Scenes/Game.unity" };
 
     [MenuItem("Cozy Horror/Build/Windows (Development)")]
-    public static void WindowsDev() => Build(BuildTarget.StandaloneWindows64, "Builds/Windows/WhileStocksLast.exe", BuildOptions.Development);
+    public static void WindowsDev() => Build(BuildTarget.StandaloneWindows64, "Builds/Dev/WhileStocksLast.exe", BuildOptions.Development);
 
     [MenuItem("Cozy Horror/Build/Windows")]
     public static void Windows() => Build(BuildTarget.StandaloneWindows64, "Builds/Windows/WhileStocksLast.exe", BuildOptions.None);

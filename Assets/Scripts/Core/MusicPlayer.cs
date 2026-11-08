@@ -19,6 +19,8 @@ public class MusicPlayer : MonoBehaviour
         source.loop = true;
         source.playOnAwake = false;
         source.volume = 0f;
+        // Start decoding every day track now (in the background) so no day waits for its music.
+        foreach (var clip in dayTracks) if (clip != null && clip.loadState == AudioDataLoadState.Unloaded) clip.LoadAudioData();
     }
 
     void Update() => source.pitch = Mathf.MoveTowards(source.pitch, 1f - detune, Time.unscaledDeltaTime * 0.1f);

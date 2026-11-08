@@ -42,6 +42,30 @@ public static class CozyImport
         "Assets/Art/Source/Props/PSD_Props_02.psd",
     };
 
+    /// Sound effects preload with the scene (no hitch / silent first click); music loads in the background
+    /// so the start screen and day starts never wait on it.
+    [MenuItem("Cozy Horror/Configure Audio Import")]
+    public static void ConfigureAudio()
+    {
+        int changed = 0;
+        foreach (var guid in AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/Audio" }))
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            var imp = AssetImporter.GetAtPath(path) as AudioImporter;
+            if (imp == null) continue;
+            bool music = path.Contains("/Music/");
+            var s = imp.defaultSampleSettings;
+            bool dirty = !s.preloadAudioData || imp.loadInBackground != music;
+            if (!dirty) continue;
+            s.preloadAudioData = true;
+            imp.defaultSampleSettings = s;
+            imp.loadInBackground = music;
+            imp.SaveAndReimport();
+            changed++;
+        }
+        Debug.Log($"[Cozy] Audio import configured ({changed} clips changed)");
+    }
+
     /// Gives every layer sprite an outline-shaped physics shape so PolygonCollider2D clicks are pixel-tight.
     [MenuItem("Cozy Horror/Enable Sprite Physics Shapes")]
     public static void EnablePhysicsShapes()
