@@ -123,6 +123,7 @@ public class Playtest : MonoBehaviour
 
         // Rooms
         bool labelOk = true;
+        if (System.Environment.GetEnvironmentVariable("COZY_PROBE") != null) { yield return ProbeTransition(gm); Finish(); yield break; }
         for (int i = 0; i < gm.rooms.rooms.Length; i++)
         {
             gm.rooms.Step(+1);
@@ -206,6 +207,30 @@ public class Playtest : MonoBehaviour
     }
 
     float lastLum;
+
+    /// Diagnostic: jump to the hallway, step into the bathroom (a blackout move) and log every frame.
+    IEnumerator ProbeTransition(GameManager gm)
+    {
+        gm.rooms.JumpTo(3);
+        yield return new WaitForSecondsRealtime(0.5f);
+        var cam = Camera.main;
+        var fadeGroup = gm.screens.fade;
+        gm.rooms.Step(+1);
+        int i = 0;
+        float t = 0f;
+        while (t < 1.6f)
+        {
+            yield return new WaitForEndOfFrame();
+            t += Time.unscaledDeltaTime;
+            log.Add($"  f{Time.frameCount} t={t:0.000} alpha={fadeGroup.alpha:0.00} camX={cam.transform.position.x:0.0} rect={cam.rect.width:0.00}x{cam.rect.height:0.00} moving={gm.rooms.Moving}");
+            if (!Application.isBatchMode && i++ % 3 == 0)
+            {
+                var shot = ScreenCapture.CaptureScreenshotAsTexture();
+                File.WriteAllBytes(Path.Combine(outDir, $"probe_{t:0.000}_a{fadeGroup.alpha:0.00}.jpg"), shot.EncodeToJPG(40));
+                Destroy(shot);
+            }
+        }
+    }
 
     /// Average brightness of what's on screen (windowed runs only; batchmode can't capture the screen).
     IEnumerator MeasureScreen()

@@ -33,7 +33,8 @@ public class RoomCamera : MonoBehaviour
     public event Action<int> RoomChanged;
 
     Camera cam;
-    float lastAspect;
+    int lastWidth, lastHeight; // screen size the current framing was computed for
+    Rect shown;                // what the camera is framing right now (mid-move this is not rooms[Current])
 
     void Awake()
     {
@@ -46,7 +47,9 @@ public class RoomCamera : MonoBehaviour
 
     void Update()
     {
-        if (Screen.width / (float)Screen.height != lastAspect) Frame(rooms[Current].area);
+        // Re-fit only when the window really changed size. (A float aspect comparison here was never equal in builds,
+        // so it snapped the camera back to the old room every frame during the blackout.)
+        if (Screen.width != lastWidth || Screen.height != lastHeight) Frame(shown);
         bool input = GameManager.Instance == null || GameManager.Instance.WorldInputEnabled;
         if (leftArrow != null) leftArrow.gameObject.SetActive(input);
         if (rightArrow != null) rightArrow.gameObject.SetActive(input);
@@ -96,26 +99,34 @@ public class RoomCamera : MonoBehaviour
             // has happened) before anything is revealed.
             fade.alpha = 1f;
             Frame(to);
+            Current = next;
+            RoomChanged?.Invoke(Current); // room name appears together with the new room
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForSecondsRealtime(blackHold);
             yield return UIAnim.Fade(fade, 0f, blackOut);
             fade.blocksRaycasts = false;
         }
-        Current = next;
         Frame(to);
         Moving = false;
-        RoomChanged?.Invoke(Current);
+        if (Current != next)
+        {
+            Current = next;
+            RoomChanged?.Invoke(Current);
+        }
     }
 
     /// Fits the rect exactly: orthographic size from its height, viewport letterboxed to its aspect.
     void Frame(Rect area)
     {
-        lastAspect = Screen.width / (float)Screen.height;
+        shown = area;
+        lastWidth = Screen.width;
+        lastHeight = Screen.height;
+        float screenAspect = Screen.width / (float)Screen.height;
         float roomAspect = area.width / area.height;
         Rect viewport = new Rect(0, 0, 1, 1);
-        if (lastAspect > roomAspect) { float w = roomAspect / lastAspect; viewport = new Rect((1 - w) / 2, 0, w, 1); }
-        else { float h = lastAspect / roomAspect; viewport = new Rect(0, (1 - h) / 2, 1, h); }
+        if (screenAspect > roomAspect) { float w = roomAspect / screenAspect; viewport = new Rect((1 - w) / 2, 0, w, 1); }
+        else { float h = screenAspect / roomAspect; viewport = new Rect(0, (1 - h) / 2, 1, h); }
         cam.rect = viewport;
         cam.orthographicSize = area.height / 2f;
         transform.position = new Vector3(area.center.x, area.center.y, transform.position.z);
