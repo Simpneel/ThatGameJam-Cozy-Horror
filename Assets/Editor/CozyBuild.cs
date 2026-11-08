@@ -14,6 +14,10 @@ public static class CozyBuild
     [MenuItem("Cozy Horror/Build/Windows")]
     public static void Windows() => Build(BuildTarget.StandaloneWindows64, "Builds/Windows/WhileStocksLast.exe", BuildOptions.None);
 
+    // Needs the "Mac Build Support (Mono)" module in Unity Hub. Built on Windows it is unsigned: players right-click > Open the first time.
+    [MenuItem("Cozy Horror/Build/Mac")]
+    public static void Mac() => Build(BuildTarget.StandaloneOSX, "Builds/Mac/WhileStocksLast.app", BuildOptions.None);
+
     [MenuItem("Cozy Horror/Build/WebGL (itch.io)")]
     public static void WebGL()
     {
