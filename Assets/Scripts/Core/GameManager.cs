@@ -11,8 +11,10 @@ public class GameManager : MonoBehaviour
     [Header("Rules (see DESIGN.md)")]
     public int startingPoints = 2;
     [Tooltip("Points earned from anomalies before the no-purchase streak starts counting.")]
-    public int pointsToArmWinStreak = 5;
+    public int pointsToArmWinStreak = 8;
     public int winStreakDays = 3;
+    [Tooltip("A no-purchase day only counts toward the win streak if at least this many anomalies were fixed that day.")]
+    public int minFixesPerStreakDay = 2;
     public int bedroomIndex = 0;
     [Tooltip("Seconds between computer pings when you have points and haven't opened the shop today (Day 2+).")]
     public Vector2 shopReminderGap = new Vector2(25f, 40f);
@@ -153,7 +155,7 @@ public class GameManager : MonoBehaviour
         director.StopMidDay();
         atmosphere.Stop();
         music.FadeOut(1.2f);
-        PlayerState.EndDay(pointsToArmWinStreak);
+        PlayerState.EndDay(pointsToArmWinStreak, minFixesPerStreakDay);
 
         // Hidden endings, checked at bedtime. Owning everything wins over the streak.
         if (shop.AllOwned) { yield return End(false); yield break; }

@@ -9,6 +9,7 @@ public static class PlayerState
     public static int Points { get; private set; }          // spendable, hidden
     public static int PointsEarned { get; private set; }    // lifetime from anomalies (arms the win streak)
     public static int PurchasesToday { get; private set; }
+    public static int FixesToday { get; private set; }      // anomalies fixed today (paying or not)
     public static int NoPurchaseStreak { get; private set; } // counted only once the streak is armed
 
     static readonly HashSet<string> owned = new HashSet<string>();
@@ -22,6 +23,7 @@ public static class PlayerState
         Points = startingPoints;
         PointsEarned = 0;
         PurchasesToday = 0;
+        FixesToday = 0;
         NoPurchaseStreak = 0;
         owned.Clear();
     }
@@ -45,15 +47,19 @@ public static class PlayerState
     }
 
     /// Call at bedtime, before StartNextDay. Updates the hidden win streak.
-    public static void EndDay(int pointsToArmStreak)
+    public static void CountFix() => FixesToday++;
+
+    /// A day with a purchase breaks the streak; a day without one only counts if the house was looked after (minFixes).
+    public static void EndDay(int pointsToArmStreak, int minFixes)
     {
         if (PointsEarned >= pointsToArmStreak)
-            NoPurchaseStreak = PurchasesToday == 0 ? NoPurchaseStreak + 1 : 0;
+            { if (PurchasesToday > 0) NoPurchaseStreak = 0; else if (FixesToday >= minFixes) NoPurchaseStreak++; }
     }
 
     public static void StartNextDay()
     {
         Day++;
         PurchasesToday = 0;
+        FixesToday = 0;
     }
 }

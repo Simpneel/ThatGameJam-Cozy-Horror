@@ -105,7 +105,7 @@ public class HouseVoice : MonoBehaviour
     {
         string[] pool;
         int day = PlayerState.Day;
-        bool restraint = PlayerState.PointsEarned >= pointsToArmStreak && PlayerState.NoPurchaseStreak >= 1 && PlayerState.PurchasesToday == 0;
+        bool restraint = PlayerState.PointsEarned >= (GameManager.Instance != null ? GameManager.Instance.pointsToArmWinStreak : pointsToArmStreak) && PlayerState.NoPurchaseStreak >= 1 && PlayerState.PurchasesToday == 0;
         if (restraint && UnityEngine.Random.value < 0.5f) pool = restraintLines;
         else pool = day <= 2 ? earlyLines : day <= 4 ? midLines : lateLines;
         if (pool.Length == 0) return "...";

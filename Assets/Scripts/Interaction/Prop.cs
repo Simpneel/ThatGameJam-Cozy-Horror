@@ -97,9 +97,17 @@ public class Prop : MonoBehaviour
             bool worthPoint = PlayerState.Day - spawnDay < pointExpiryDays;
             Resolve();
             lastAnomalyDay = PlayerState.Day; // fixed today: rests through tomorrow
+            PlayerState.CountFix();
+            if (!worthPoint)
+            {
+                // Left too long: fixed, but no reward. A dull thunk instead of the bright chime, no pop.
+                Sfx.Play(clickSound != null ? clickSound : FixedSound, volume * 0.7f, 0.55f);
+                Wiggle(0.4f);
+                return;
+            }
             Sfx.Play(FixedSound, 0.8f, UnityEngine.Random.Range(1.1f, 1.2f));
             Sfx.Play(clickSound, volume * 0.6f, 0.75f);
-            if (worthPoint) PlayerState.EarnPoint(); // left unfound too long: fixing it no longer pays
+            PlayerState.EarnPoint();
             Pop(1.3f);
             return;
         }

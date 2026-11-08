@@ -36,7 +36,7 @@ The house starts partly empty; buying items on the computer fills it, and the th
 
 ## Endings (both hidden)
 
-- **Win**: after the player has earned 5 points in total, 3 days in a row with no purchase wins at bedtime.
+- **Win**: after the player has earned 8 points in total, 3 days with no purchase win at bedtime. A day only counts if at least 2 anomalies were fixed that day (an idle day does not count; a purchase resets the streak).
 - **Lose**: owning every item ends the game in a loss at the next bedtime.
 
 ## Current tuning (all editable in the Inspector on the `Game` object)
@@ -44,8 +44,9 @@ The house starts partly empty; buying items on the computer fills it, and the th
 | Setting | Value | Where |
 |---|---|---|
 | Starting points | 2 | GameManager |
-| Points needed to arm the win streak | 5 | GameManager |
-| Points per anomaly fixed | 1, any type. Unfound for 3 days (found after its day + 2) = fixable but worth 0 | Prop (pointExpiryDays) |
+| Points needed to arm the win streak | 8 | GameManager |
+| Fixes needed for a no-purchase day to count | 2 | GameManager |
+| Points per anomaly fixed | 1, any type. Unfound for 3 days (found after its day + 2) = fixable but worth 0, with a dull thunk and no pop | Prop (pointExpiryDays) |
 | Anomaly cooldown | once found and fixed, an object rests 1 full day before it can go wrong again | Prop (cooldownDays) |
 | Max purchases per day | 4 | Shop |
 | New anomalies per day | 3 on Day 2, +2 each day (3, 5, 7, 9), max 10 at once | AnomalyDirector |

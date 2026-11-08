@@ -218,20 +218,21 @@ public class Playtest : MonoBehaviour
         atm.forceSleepAfter = 20f;
         yield return WaitFor(() => gm.CanPause, 15f);
 
-        // Win: arm the streak, then three nights without buying
-        PlayerState.EarnPoint(5);
-        for (int night = 0; night < 3; night++)
+        // Win: arm the streak, then an idle night (must not count), then three nights without buying that each fix 2 anomalies
+        PlayerState.EarnPoint(gm.pointsToArmWinStreak);
+        for (int night = 0; night < 4; night++)
         {
             int day = PlayerState.Day;
+            if (night > 0) foreach (var a in Object.FindObjectsByType<Prop>(FindObjectsInactive.Exclude).Where(p => p.IsAnomalous).Take(gm.minFixesPerStreakDay).ToList()) a.Click();
             gm.bedProps.First(p => !p.canBeAnomalous).Click();
             yield return new WaitForSecondsRealtime(0.3f);
             ClickYes(gm);
             yield return WaitFor(() => (PlayerState.Day > day && gm.CanPause) || gm.screens.winScreen.gameObject.activeSelf, 20f);
             log.Add($"  night {night}: day {PlayerState.Day} streak {PlayerState.NoPurchaseStreak} bought {PlayerState.PurchasesToday} earned {PlayerState.PointsEarned} playing {gm.CanPause}");
-            if (night == 0) Check(gm.director.ActiveCount >= 5, $"Day 3 has at least 5 anomalies ({gm.director.ActiveCount})");
+            if (night == 0) { Check(gm.director.ActiveCount >= 5, $"Day {PlayerState.Day} has at least 5 anomalies ({gm.director.ActiveCount})"); Check(PlayerState.NoPurchaseStreak == 0, "An idle day (no fixes) does not count toward the win streak"); }
         }
         yield return new WaitForSecondsRealtime(2.5f);
-        Check(gm.screens.winScreen.gameObject.activeSelf, $"3 armed days without buying wins (streak {PlayerState.NoPurchaseStreak})");
+        Check(gm.screens.winScreen.gameObject.activeSelf, $"3 armed days without buying (2+ fixes each) win (streak {PlayerState.NoPurchaseStreak})");
         yield return Shot("12_win");
 
         // Memory / drift: after several days nothing should pile up, and every non-anomalous prop must be exactly where the scene put it.
