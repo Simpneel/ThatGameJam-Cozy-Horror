@@ -9,13 +9,22 @@ public static class CozyBuild
     static readonly string[] Scenes = { "Assets/Scenes/Game.unity" };
 
     [MenuItem("Cozy Horror/Build/Windows (Development)")]
-    public static void WindowsDev() => Build(BuildTarget.StandaloneWindows64, "Builds/Windows/CozyHorror.exe", BuildOptions.Development);
+    public static void WindowsDev() => Build(BuildTarget.StandaloneWindows64, "Builds/Windows/WhileStocksLast.exe", BuildOptions.Development);
 
     [MenuItem("Cozy Horror/Build/Windows")]
-    public static void Windows() => Build(BuildTarget.StandaloneWindows64, "Builds/Windows/CozyHorror.exe", BuildOptions.None);
+    public static void Windows() => Build(BuildTarget.StandaloneWindows64, "Builds/Windows/WhileStocksLast.exe", BuildOptions.None);
 
     [MenuItem("Cozy Horror/Build/WebGL (itch.io)")]
-    public static void WebGL() => Build(BuildTarget.WebGL, "Builds/WebGL", BuildOptions.None);
+    public static void WebGL()
+    {
+        // itch.io doesn't send Content-Encoding headers, so compressed builds need the JS decompression fallback.
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.decompressionFallback = true;
+        PlayerSettings.WebGL.dataCaching = true;
+        PlayerSettings.defaultWebScreenWidth = 1280;
+        PlayerSettings.defaultWebScreenHeight = 720;
+        Build(BuildTarget.WebGL, "Builds/WebGL", BuildOptions.None);
+    }
 
     static void Build(BuildTarget target, string defaultPath, BuildOptions options)
     {
