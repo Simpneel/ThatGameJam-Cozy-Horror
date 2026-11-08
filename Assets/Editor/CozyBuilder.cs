@@ -166,6 +166,8 @@ public static class CozyBuilder
         var leftArrow = ArrowButton(ui, "Arrow Left", -1);
         var rightArrow = ArrowButton(ui, "Arrow Right", +1);
         BuildRoomLabel(ui, roomCam);
+        var voice = BuildHouseVoice(ui, game);
+        Wire(click, ("hoverCursor", EnsureCursorTexture()), ("missPuff", BuildMissPuff(ui)));
 
         var flyer = BuildFlyer(ui, shop);
         BuildShopWindow(ui, shop);
@@ -221,6 +223,21 @@ public static class CozyBuilder
         atm.globalLight = light; atm.bedGlow = glow; atm.bed = bed;
         gm.atmosphere = atm;
         gm.mainMenu = builtMenu;
+        atm.voice = voice;
+        atm.flickerSound = UiSfx(2);
+
+        // Who talks: anything that exists from the start, plus the radio and smart speaker once bought.
+        var allProps = Object.FindObjectsByType<Prop>(FindObjectsInactive.Include);
+        HouseVoice.Speaker Speaker(string propName, string label, bool talksOnClick) =>
+            new HouseVoice.Speaker { prop = allProps.FirstOrDefault(p => p.name == propName), label = label, talksOnClick = talksOnClick };
+        voice.speakers = new[]
+        {
+            Speaker("TV", "TV", true),
+            Speaker("Laptop", "LAPTOP", false), // clicking it opens the shop instead
+            Speaker("Radio", "RADIO", true),
+            Speaker("Smart Speaker", "SMART SPEAKER", true),
+        };
+        if (voice.speakers.Any(s => s.prop == null)) Debug.LogError("[Cozy] A HouseVoice speaker prop was not found");
 
         AssignAnomalyKinds(roomCam.rooms);
 
@@ -690,6 +707,77 @@ public static class CozyBuilder
         var menu = layer.gameObject.AddComponent<MainMenu>();
         Wire(menu, ("panel", panel.gameObject), ("playButton", play), ("creditsButton", credits), ("quitButton", quit));
         return menu;
+    }
+
+    /// Caption box at the bottom centre for things in the house that talk (and the creep warnings).
+    static HouseVoice BuildHouseVoice(Transform ui, GameObject game)
+    {
+        var rt = Rect(ui, "House Voice Caption", Vector2.zero, new Vector2(900, 80));
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0f);
+        rt.pivot = new Vector2(0.5f, 0f);
+        rt.anchoredPosition = new Vector2(80f, 40f); // a little right of centre so it never overlaps the room label
+        Img(rt, null, Dark, false);
+        var text = Label(rt, "Label", "...", 30, Vector2.zero, rt.sizeDelta - new Vector2(40, 0), null, FontStyle.Italic);
+        var voice = game.AddComponent<HouseVoice>();
+        Wire(voice, ("group", rt.gameObject.AddComponent<CanvasGroup>()), ("text", text), ("blip", UiSfx(2)));
+        return voice;
+    }
+
+    /// The "..." that floats up when you click on nothing.
+    static ClickPuff BuildMissPuff(Transform ui)
+    {
+        var layer = Full(ui, "Miss Puff");
+        var dots = Rect(layer, "Dots", Vector2.zero, new Vector2(120, 60));
+        var t = dots.gameObject.AddComponent<Text>();
+        t.font = font;
+        t.text = "…";
+        t.fontSize = 56;
+        t.fontStyle = FontStyle.Bold;
+        t.alignment = TextAnchor.MiddleCenter;
+        t.raycastTarget = false;
+        var outline = dots.gameObject.AddComponent<Outline>();
+        outline.effectColor = new Color(0f, 0f, 0f, 0.8f);
+        outline.effectDistance = new Vector2(2f, -2f);
+        var puff = layer.gameObject.AddComponent<ClickPuff>();
+        Wire(puff, ("canvasRect", (RectTransform)ui), ("puff", dots), ("group", layer.gameObject.AddComponent<CanvasGroup>()));
+        return puff;
+    }
+
+    const string CursorPng = "Assets/Art/Sprites/UI/SPR_UI_CursorHover.png";
+
+    /// Hover cursor: a white ring with a dark edge and a centre dot. Generated once; replace the PNG with drawn art any time.
+    static Texture2D EnsureCursorTexture()
+    {
+        if (!File.Exists(CursorPng))
+        {
+            const int S = 32;
+            var tex = new Texture2D(S, S, TextureFormat.RGBA32, false);
+            var c = new Vector2(S / 2f, S / 2f);
+            for (int y = 0; y < S; y++)
+                for (int x = 0; x < S; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), c);
+                    float ring = Mathf.Clamp01(1.6f - Mathf.Abs(d - 10f));      // white ring, radius 10
+                    float edge = Mathf.Clamp01(2.6f - Mathf.Abs(d - 10f)) - ring; // dark outline around it
+                    float dot = Mathf.Clamp01(2.5f - d);                          // centre dot
+                    float white = Mathf.Max(ring, dot);
+                    var col = Color.Lerp(new Color(0.12f, 0.12f, 0.12f, Mathf.Max(edge, Mathf.Clamp01(3.5f - d) - dot) * 0.85f), Color.white, white);
+                    col.a = Mathf.Max(col.a, white);
+                    tex.SetPixel(x, y, col);
+                }
+            File.WriteAllBytes(CursorPng, tex.EncodeToPNG());
+            AssetDatabase.ImportAsset(CursorPng);
+        }
+        var imp = (TextureImporter)AssetImporter.GetAtPath(CursorPng);
+        if (imp.textureType != TextureImporterType.Cursor)
+        {
+            imp.textureType = TextureImporterType.Cursor;
+            imp.isReadable = true;
+            imp.alphaIsTransparency = true;
+            imp.mipmapEnabled = false;
+            imp.SaveAndReimport();
+        }
+        return Load<Texture2D>(CursorPng);
     }
 
     /// Bottom-left room name that fades in for 3 s on every room change.

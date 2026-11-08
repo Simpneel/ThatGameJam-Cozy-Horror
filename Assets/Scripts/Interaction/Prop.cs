@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 
-public enum AnomalyKind { None, SpriteSwap, Tilt, Shift, Grow, Shrink, Tint }
+// Vanish is never picked at random: only the creep consequences use it (see Atmosphere).
+public enum AnomalyKind { None, SpriteSwap, Tilt, Shift, Grow, Shrink, Tint, Vanish }
 
 /// Anything in the room the player can click (Unreal: an Actor with an OnClicked event).
 /// Handles hover feedback, the click wiggle + sound, and being an anomaly.
@@ -125,10 +126,17 @@ public class Prop : MonoBehaviour
             case AnomalyKind.Grow: aScale = Mathf.Lerp(1.15f, 1.3f, intensity); break;
             case AnomalyKind.Shrink: aScale = Mathf.Lerp(0.85f, 0.7f, intensity); break;
             case AnomalyKind.Tint: sr.color = new Color(1f, 0.45f, 0.45f, normalColor.a); break;
+            case AnomalyKind.Vanish: SetVisible(false); break; // collider stays: click the empty spot to bring it back
         }
         Anomaly = kind;
         poseDirty = true;
         return true;
+    }
+
+    /// Shows/hides the sprite and anything attached (e.g. the headphone stand).
+    void SetVisible(bool on)
+    {
+        foreach (var r in GetComponentsInChildren<SpriteRenderer>(true)) r.enabled = on;
     }
 
     public void Resolve()
@@ -136,6 +144,7 @@ public class Prop : MonoBehaviour
         Init();
         sr.sprite = normalSprite;
         sr.color = normalColor;
+        if (Anomaly == AnomalyKind.Vanish) SetVisible(true);
         aPos = Vector3.zero;
         aRot = 0f;
         aScale = 1f;

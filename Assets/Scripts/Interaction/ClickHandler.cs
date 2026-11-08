@@ -5,6 +5,10 @@ using UnityEngine;
 public class ClickHandler : MonoBehaviour
 {
     [SerializeField] Camera cam;
+    [Tooltip("Cursor shown while hovering something clickable (texture import type: Cursor).")]
+    [SerializeField] Texture2D hoverCursor;
+    [Tooltip("Little '...' shown when you click on nothing.")]
+    [SerializeField] ClickPuff missPuff;
 
     Prop hovered;
     readonly System.Collections.Generic.List<Collider2D> hits = new System.Collections.Generic.List<Collider2D>();
@@ -28,12 +32,18 @@ public class ClickHandler : MonoBehaviour
             if (hovered != null) hovered.Hovered = false;
             hovered = target;
             if (hovered != null) hovered.Hovered = true;
+            if (hoverCursor != null)
+                Cursor.SetCursor(hovered != null ? hoverCursor : null, new Vector2(hoverCursor.width, hoverCursor.height) * 0.5f, CursorMode.Auto);
         }
 
         // Only accept the click if the room was already clickable at the end of last frame.
         // Otherwise the click that closes a menu (shop ✕, flyer X, "No", "Resume") would fall through onto the room.
-        if (target != null && interactableLastFrame && GameInput.ClickedThisFrame) target.Click();
+        if (!interactableLastFrame || !GameInput.ClickedThisFrame) return;
+        if (target != null) target.Click();
+        else if (canInteract && !GameInput.PointerOverUI && missPuff != null) missPuff.Show(GameInput.PointerPosition);
     }
+
+    void OnDisable() => Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 
     bool interactableLastFrame;
 

@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
         {
             if (phase != Phase.Title) return;
             mainMenu.Hide();
-            screens.ShowPage(screens.titleScreen, () => StartCoroutine(BeginRun()));
+            screens.ShowPage(screens.titleScreen, () => StartCoroutine(BeginRun()), fadeIn: false); // swaps straight in for the menu
         };
         mainMenu.CreditsPressed += () => screens.ShowPage(screens.creditsScreen, () => screens.HidePage(screens.creditsScreen));
         mainMenu.Show();
@@ -134,6 +134,16 @@ public class GameManager : MonoBehaviour
     {
         if (phase != Phase.Playing) return;
         bedDialog.Show(() => StartCoroutine(Sleep()));
+    }
+
+    /// Creep consequence: too many unfixed anomalies for too long and the day ends without asking.
+    public void ForceSleep()
+    {
+        if (phase != Phase.Playing) return;
+        shop.Close();
+        bedDialog.Hide();
+        flyer.Cancel();
+        StartCoroutine(Sleep());
     }
 
     IEnumerator Sleep()

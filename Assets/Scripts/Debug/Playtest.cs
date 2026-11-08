@@ -24,6 +24,7 @@ public class Playtest : MonoBehaviour
     void Start()
     {
         outDir = System.Environment.GetEnvironmentVariable("COZY_OUT") ?? "Temp/Playtest";
+        Application.runInBackground = true; // the test must keep running even if its window loses focus
         Directory.CreateDirectory(outDir);
         StartCoroutine(Watchdog());
         StartCoroutine(Run());
@@ -176,6 +177,29 @@ public class Playtest : MonoBehaviour
         gm.flyer.GetComponentInChildren<Button>().onClick.Invoke();
         Check(PlayerState.PointsEarned == fp + 1 && !gm.shop.IsOpen && !gm.flyer.IsOpen, "Clicking the anomaly flyer earns a point and doesn't open the shop");
         gm.flyer.anomalyChance = 0.3f;
+
+        // House voice: clicking the TV makes it say something
+        var voice = gm.GetComponent<HouseVoice>();
+        var tv = voice.speakers.First(s => s.label == "TV").prop;
+        if (tv.IsAnomalous) tv.Click();
+        tv.Click();
+        yield return new WaitForSecondsRealtime(0.5f);
+        Check(voice.IsShowing, "Clicking the TV shows a caption line");
+        yield return Shot("11d_voice");
+
+        // Creep consequences: pile up anomalies, expect a vanished object, then a forced bedtime
+        var atm = gm.atmosphere;
+        atm.forceSleepAfter = 999f; // first: vanish
+        for (int k = 0; k < 30 && gm.director.ActiveCount < atm.forceSleepAt + 1; k++) gm.director.SpawnOne(false);
+        int dayBeforeForce = PlayerState.Day;
+        yield return WaitFor(() => gm.director.VanishedCount > 0, 12f);
+        Check(gm.director.VanishedCount > 0, $"Heavy creep makes an object vanish ({gm.director.ActiveCount} unfixed)");
+        yield return Shot("11e_vanish");
+        atm.forceSleepAfter = 3f; // then: forced bedtime
+        yield return WaitFor(() => PlayerState.Day > dayBeforeForce, 15f);
+        Check(PlayerState.Day > dayBeforeForce, "Overwhelming creep forces you to bed");
+        atm.forceSleepAfter = 20f;
+        yield return WaitFor(() => gm.CanPause, 15f);
 
         // Win: arm the streak, then three nights without buying
         PlayerState.EarnPoint(5);

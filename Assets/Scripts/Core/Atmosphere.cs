@@ -13,6 +13,20 @@ public class Atmosphere : MonoBehaviour
     [Range(0f, 1f)] public float maxVignette = 0.85f;
     [Range(0f, 0.3f)] public float maxDetune = 0.12f;
 
+    [Header("Creep consequences (by number of unfixed anomalies)")]
+    [Tooltip("From this many unfixed anomalies the lights flicker every few seconds.")]
+    public int flickerAt = 6;
+    public Vector2 flickerGap = new Vector2(5f, 10f);
+    [Tooltip("From this many, an object in view vanishes (click the empty spot to bring it back).")]
+    public int vanishAt = 9;
+    public float vanishGap = 20f;
+    public int maxVanished = 2;
+    [Tooltip("At this many for forceSleepAfter seconds, you're too exhausted and go to bed.")]
+    public int forceSleepAt = 12;
+    public float forceSleepAfter = 20f;
+    public AudioClip flickerSound;
+    public HouseVoice voice;
+
     [Header("Day pacing")]
     [Tooltip("Seconds from morning to night. Time keeps running in the shop and other menus; it stops only for pause and room transitions.")]
     public float dayLength = 120f;
@@ -38,6 +52,12 @@ public class Atmosphere : MonoBehaviour
 
     bool running;
     float nextBedNudge, nextCreepPoll, creepTarget;
+    int activeCount;
+    float baseIntensity = 1f, flickerMul = 1f, nextFlicker, nextVanish, overload;
+    bool warned;
+
+    /// Unfixed anomalies right now (polled 4x a second).
+    public int ActiveAnomalies => activeCount;
 
     /// Only touches the UI when the value really changed (each change re-batches its canvas), and hides it at zero.
     static void SetAlpha(Graphic g, float a)
@@ -57,9 +77,14 @@ public class Atmosphere : MonoBehaviour
     {
         DayProgress = 0f;
         Phase = 0;
-        if (globalLight != null) { globalLight.intensity = phaseBrightness[0]; globalLight.color = phaseColor[0]; } // snap to morning (screen is black)
+        baseIntensity = phaseBrightness[0];
+        if (globalLight != null) { globalLight.intensity = baseIntensity; globalLight.color = phaseColor[0]; } // snap to morning (screen is black)
         running = true;
         nextBedNudge = 0f;
+        overload = 0f;
+        warned = false;
+        flickerMul = 1f;
+        nextFlicker = nextVanish = Time.time + 8f; // a calm moment after waking up
     }
 
     public void Stop() => running = false;
@@ -70,7 +95,8 @@ public class Atmosphere : MonoBehaviour
         // The anomaly count only changes on spawns/fixes, so polling it 4x a second is plenty.
         if (Time.unscaledTime >= nextCreepPoll && director != null)
         {
-            creepTarget = Mathf.Clamp01(director.ActiveCount / (float)Mathf.Max(1, creepFullAt));
+            activeCount = director.ActiveCount;
+            creepTarget = Mathf.Clamp01(activeCount / (float)Mathf.Max(1, creepFullAt));
             nextCreepPoll = Time.unscaledTime + 0.25f;
         }
         Creep = Mathf.MoveTowards(Creep, creepTarget, Time.unscaledDeltaTime * 0.5f);
@@ -91,7 +117,8 @@ public class Atmosphere : MonoBehaviour
         if (globalLight != null)
         {
             float step = Time.deltaTime / Mathf.Max(0.01f, phaseBlend);
-            globalLight.intensity = Mathf.MoveTowards(globalLight.intensity, phaseBrightness[Phase], step);
+            baseIntensity = Mathf.MoveTowards(baseIntensity, phaseBrightness[Phase], step);
+            globalLight.intensity = baseIntensity * flickerMul;
             globalLight.color = Color.Lerp(globalLight.color, phaseColor[Phase], step * 2f);
         }
 
@@ -103,11 +130,58 @@ public class Atmosphere : MonoBehaviour
             if (bedGlow.enabled) { var c = bedGlow.color; c.a = a; bedGlow.color = c; }
         }
 
+        if (running && clock) UpdateConsequences();
+
         // Once it's fully evening, the bed gives a little nudge every few seconds.
         if (running && playing && DayProgress >= 1f && bed != null && Time.time >= nextBedNudge)
         {
             bed.Wiggle(0.35f);
             nextBedNudge = Time.time + 5f;
         }
+    }
+
+    /// Ignoring the house has a cost: flickering lights, then vanishing objects, then you're forced to bed.
+    void UpdateConsequences()
+    {
+        if (activeCount >= flickerAt && Time.time >= nextFlicker)
+        {
+            StartCoroutine(Flicker());
+            nextFlicker = Time.time + Random.Range(flickerGap.x, flickerGap.y);
+        }
+
+        if (activeCount >= vanishAt && Time.time >= nextVanish && director != null && director.VanishedCount < maxVanished)
+        {
+            director.SpawnVanish();
+            nextVanish = Time.time + vanishGap;
+        }
+
+        if (activeCount >= forceSleepAt)
+        {
+            overload += Time.deltaTime;
+            if (!warned && overload >= forceSleepAfter * 0.5f)
+            {
+                warned = true;
+                if (voice != null) voice.Show(voice.tiredWarning);
+            }
+            if (overload >= forceSleepAfter && GameManager.Instance != null)
+            {
+                overload = 0f;
+                if (voice != null) voice.Show(voice.forcedSleepLine);
+                GameManager.Instance.ForceSleep();
+            }
+        }
+        else overload = Mathf.Max(0f, overload - Time.deltaTime); // fixing things buys the time back
+    }
+
+    System.Collections.IEnumerator Flicker()
+    {
+        Sfx.Play(flickerSound, 0.35f, 0.5f);
+        float[] pattern = { 0.15f, 1f, 0.35f, 1f };
+        foreach (var m in pattern)
+        {
+            flickerMul = m;
+            yield return new WaitForSeconds(Random.Range(0.05f, 0.12f));
+        }
+        flickerMul = 1f;
     }
 }

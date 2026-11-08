@@ -138,4 +138,29 @@ public class AnomalyDirector : MonoBehaviour
     public float Intensity => Mathf.Clamp01((PlayerState.Day - firstAnomalyDay) / (float)Mathf.Max(1, daysToFullIntensity));
 
     float Weight(Prop p) => p.anomalySprite != null ? drawnArtWeight : 1f;
+
+    public int VanishedCount
+    {
+        get
+        {
+            int n = 0;
+            foreach (var p in props) if (p.Anomaly == AnomalyKind.Vanish && p.gameObject.activeInHierarchy) n++;
+            return n;
+        }
+    }
+
+    /// Creep consequence: a normal object in the room you're looking at disappears (falls back to any room).
+    public bool SpawnVanish()
+    {
+        var visible = new List<Prop>();
+        var any = new List<Prop>();
+        foreach (var p in props)
+        {
+            if (!p.canBeAnomalous || p.IsAnomalous || !p.gameObject.activeInHierarchy) continue;
+            any.Add(p);
+            if (rooms != null && rooms.IsVisible(p.transform.position)) visible.Add(p);
+        }
+        var pool = visible.Count > 0 ? visible : any;
+        return pool.Count > 0 && pool[Random.Range(0, pool.Count)].Trigger(AnomalyKind.Vanish);
+    }
 }

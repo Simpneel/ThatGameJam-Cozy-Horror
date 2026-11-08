@@ -37,13 +37,16 @@ public class Screens : MonoBehaviour
 
     // ---------- pages ----------
 
-    public void ShowPage(Button page, Action onClick)
+    /// fadeIn = false shows the page at once (used when replacing another full-screen page, so nothing shows through).
+    public void ShowPage(Button page, Action onClick, bool fadeIn = true)
     {
         page.onClick.RemoveAllListeners();
         page.onClick.AddListener(() => { page.onClick.RemoveAllListeners(); onClick?.Invoke(); });
         page.gameObject.SetActive(true);
         var g = page.GetComponent<CanvasGroup>();
-        if (g != null) { g.alpha = 0f; StartCoroutine(UIAnim.Fade(g, 1f, 0.6f)); }
+        if (g == null) return;
+        if (fadeIn) { g.alpha = 0f; StartCoroutine(UIAnim.Fade(g, 1f, 0.6f)); }
+        else g.alpha = 1f;
     }
 
     public void HidePage(Button page) => page.gameObject.SetActive(false);

@@ -24,4 +24,10 @@ public class ConfirmDialog : MonoBehaviour
         panel.SetActive(true);
         StartCoroutine(UIAnim.PopIn(panel.transform, 0.9f, 0.2f));
     }
+
+    public void Hide()
+    {
+        panel.SetActive(false);
+        onYes = null;
+    }
 }

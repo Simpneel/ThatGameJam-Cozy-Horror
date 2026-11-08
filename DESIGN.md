@@ -57,6 +57,9 @@ The house starts partly empty; buying items on the computer fills it, and the th
 | Computer reminders | Day 2+: pings every 25–40 s while you have points and haven't opened the shop today | GameManager |
 | Anomaly calls | every 7–14 s a random anomaly twitches + plays its sound (faint if in another room) | AnomalyDirector |
 | Creep | vignette + music detune scale with unfixed anomalies, full at 8 | Atmosphere |
+| Creep consequences | 6+ unfixed: lights flicker every 5–10 s. 9+: an object in view vanishes every 20 s (max 2; click the empty spot to fix). 12+ for 20 s: warning caption, then forced to bed (fixing things buys time back) | Atmosphere |
+| House voice | TV, laptop, radio, smart speaker speak a caption every 25–45 s, and when clicked (not the laptop). Ads on Days 1–2, pushier 3–4, uneasy 5+; restraint hints once the win streak is going. All lines editable | HouseVoice |
+| Feedback | ring cursor over clickable things; "…" puff when clicking nothing | ClickHandler |
 | Day length | 120 s, in 4 visible steps (Morning 100%, Afternoon 88% warm, Evening 68% orange, Night 40% blue), each easing in over 3 s. Clock runs in menus, stops for pause/room transitions. Bed halo from Evening, bed nudges at end | Atmosphere |
 
 **Shop catalogue.** Each morning the shop restocks with only the items you don't own, in this order.
