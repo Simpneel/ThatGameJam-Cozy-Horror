@@ -11,7 +11,7 @@ public class AnomalyDirector : MonoBehaviour
     public int baseCount = 3;          // new anomalies on the first anomaly day
     public int extraPerDay = 2;        // added each day after that (3, 5, 7, 9...)
     public int maxNewPerDay = 9;
-    public int maxActive = 16;         // never more than this many at once
+    public int maxActive = 10;         // never more than this many at once
 
     [Header("Mid-day surprises")]
     [Tooltip("From this day on, extra anomalies appear while the player is in another room.")]
@@ -23,6 +23,9 @@ public class AnomalyDirector : MonoBehaviour
     [Header("Picking")]
     [Tooltip("How much more likely a prop with hand-drawn anomaly art is to be picked.")]
     public float drawnArtWeight = 4f;
+    [Tooltip("Before this day, drawn anomaly art is favoured even more (earlyDrawnArtWeight).")]
+    public int earlyDrawnUntilDay = 5;
+    public float earlyDrawnArtWeight = 12f;
 
     [Header("Calls (anomalies give themselves away)")]
     [Tooltip("Every so often a random anomaly twitches and makes its sound. Quieter when it's in another room.")]
@@ -137,7 +140,7 @@ public class AnomalyDirector : MonoBehaviour
     /// 0 on the first anomaly day, 1 after daysToFullIntensity days.
     public float Intensity => Mathf.Clamp01((PlayerState.Day - firstAnomalyDay) / (float)Mathf.Max(1, daysToFullIntensity));
 
-    float Weight(Prop p) => p.anomalySprite != null ? drawnArtWeight : 1f;
+    float Weight(Prop p) => p.anomalySprite == null ? 1f : PlayerState.Day < earlyDrawnUntilDay ? earlyDrawnArtWeight : drawnArtWeight;
 
     public int VanishedCount
     {

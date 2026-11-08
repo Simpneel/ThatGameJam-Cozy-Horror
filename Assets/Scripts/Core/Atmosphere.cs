@@ -15,14 +15,14 @@ public class Atmosphere : MonoBehaviour
 
     [Header("Creep consequences (by number of unfixed anomalies)")]
     [Tooltip("From this many unfixed anomalies the lights flicker every few seconds.")]
-    public int flickerAt = 6;
+    public int flickerAt = 5;
     public Vector2 flickerGap = new Vector2(5f, 10f);
     [Tooltip("From this many, an object in view vanishes (click the empty spot to bring it back).")]
-    public int vanishAt = 9;
+    public int vanishAt = 7;
     public float vanishGap = 20f;
     public int maxVanished = 2;
     [Tooltip("At this many for forceSleepAfter seconds, you're too exhausted and go to bed.")]
-    public int forceSleepAt = 12;
+    public int forceSleepAt = 9;
     public float forceSleepAfter = 20f;
     public AudioClip flickerSound;
     public HouseVoice voice;

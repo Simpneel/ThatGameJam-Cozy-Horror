@@ -47,9 +47,9 @@ The house starts partly empty; buying items on the computer fills it, and the th
 | Points needed to arm the win streak | 5 | GameManager |
 | Points per anomaly fixed | 1 | Prop |
 | Max purchases per day | 4 | Shop |
-| New anomalies per day | 3 on Day 2, +2 each day (3, 5, 7, 9), max 16 at once | AnomalyDirector |
+| New anomalies per day | 3 on Day 2, +2 each day (3, 5, 7, 9), max 10 at once | AnomalyDirector |
 | Mid-day surprises (in a room you're not looking at) | from Day 3: (day − 2) of them, max 4, every 15–35 s | AnomalyDirector |
-| Props with drawn anomaly art | 4× more likely to be picked; 90% use the drawn version | AnomalyDirector / Prop |
+| Props with drawn anomaly art | 12× more likely to be picked before Day 5, 4× after; 90% use the drawn version | AnomalyDirector / Prop |
 | Anomaly flyer | from Day 2: 30% +10%/day; clicking it = +1 point, no shop | FlyerPopup |
 | Flyer | Days 1–3: guaranteed once, 5–15 s into the day. Day 4+: (day − 2) chances (max 3), each 15% +10%/day, 12–40 s apart; opens the shop from Day 4 | FlyerPopup |
 | Room transitions | same-floor neighbours pan (0.45 s); others fade to black 0.3 s, hold 0.15 s, fade in 0.4 s | RoomCamera |
@@ -57,13 +57,13 @@ The house starts partly empty; buying items on the computer fills it, and the th
 | Computer reminders | Day 2+: pings every 25–40 s while you have points and haven't opened the shop today | GameManager |
 | Anomaly calls | every 7–14 s a random anomaly twitches + plays its sound (faint if in another room) | AnomalyDirector |
 | Creep | vignette + music detune scale with unfixed anomalies, full at 8 | Atmosphere |
-| Creep consequences | 6+ unfixed: lights flicker every 5–10 s. 9+: an object in view vanishes every 20 s (max 2; click the empty spot to fix). 12+ for 20 s: warning caption, then forced to bed (fixing things buys time back) | Atmosphere |
+| Creep consequences | 5+ unfixed: lights flicker every 5–10 s. 7+: an object in view vanishes every 20 s (max 2; click the empty spot to fix). 9+ for 20 s: warning caption, then forced to bed (fixing things buys time back) | Atmosphere |
 | House voice | TV, laptop, radio, smart speaker speak a caption every 25–45 s, and when clicked (not the laptop). Ads on Days 1–2, pushier 3–4, uneasy 5+; restraint hints once the win streak is going. All lines editable | HouseVoice |
 | Feedback | ring cursor over clickable things; "…" puff when clicking nothing | ClickHandler |
 | Day length | 120 s, in 4 visible steps (Morning 100%, Afternoon 88% warm, Evening 68% orange, Night 40% blue), each easing in over 3 s. Clock runs in menus, stops for pause/room transitions. Bed halo from Evening, bed nudges at end | Atmosphere |
 
 **Shop catalogue.** Each morning the shop restocks with only the items you don't own, in this order.
-The card art prints prices 1/2/4/2, so the price belongs to the slot, not the item, and can change as stock shifts:
+The card art prints prices 1/2/4/2, so the price belongs to the slot, not the item, and can change as stock shifts. **From Day 5 every price doubles** (2/4/8/4; the printed price stays the same, and a "PRICE HIKE!" notice shows the first time the shop opens each day):
 Page 1: Flower Vase 1, Radio 2, Headphones 4, Board Game 2.
 Page 2: Plant 1, Lamp 2, Smart Speaker 4, Kettlebell 2.
 Page 3: Goat Button 1. Total = 19 points.

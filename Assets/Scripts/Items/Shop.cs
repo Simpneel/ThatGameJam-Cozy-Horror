@@ -33,6 +33,12 @@ public class Shop : MonoBehaviour
 
     [Tooltip("Price printed on each card slot of the BuyMe page art, left to right.")]
     public int[] slotPrices = { 1, 2, 4, 2 };
+    [Tooltip("From this day on, every price is multiplied (the printed card price stays, so it stings).")]
+    public int priceHikeDay = 5;
+    public int priceHikeMultiplier = 2;
+    public string priceHikeMessage = "PRICE HIKE! EVERYTHING COSTS DOUBLE";
+
+    int SlotPrice(int i) => slotPrices[i % slotPrices.Length] * (PlayerState.Day >= priceHikeDay ? priceHikeMultiplier : 1);
 
     readonly List<ShopItem> stock = new List<ShopItem>();
 
@@ -79,6 +85,7 @@ public class Shop : MonoBehaviour
     public void Open()
     {
         if (IsOpen) return;
+        if (!OpenedToday && PlayerState.Day >= priceHikeDay && toast != null) toast.Show(priceHikeMessage);
         OpenedToday = true;
         page = 0;
         Refresh();
@@ -106,7 +113,7 @@ public class Shop : MonoBehaviour
         for (int i = 0; i < cards.Length; i++)
         {
             int index = page * cards.Length + i;
-            cards[i].Bind(index < stock.Count ? stock[index] : null, slotPrices[i % slotPrices.Length]);
+            cards[i].Bind(index < stock.Count ? stock[index] : null, SlotPrice(i));
         }
         cartLabel.text = PlayerState.PurchasesToday > 0 ? $"({PlayerState.PurchasesToday})" : "";
         prevButton.interactable = nextButton.interactable = PageCount > 1;
