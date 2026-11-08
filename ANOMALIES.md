@@ -28,16 +28,16 @@ Tint (red) only unlocks from Day 4, even where listed.
 | Bathroom | Tub | from the start |  | Tilt, Shift, Tint |
 | Bathroom | Tub Rim | from the start |  | Tilt, Shift, Tint |
 | Bedroom | Bed | from the start |  | never (interactive) |
-| Bedroom | Bedroom Cabinet | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
+| Bedroom | Bedroom Cabinet | from the start | **yes** | Tilt, Shift, Grow, Shrink, Tint |
 | Bedroom | Bedroom Rug | from the start | **yes** | Tilt, Shift, Grow, Shrink |
 | Bedroom | Bedroom Window | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Bedroom | Blanket | from the start |  | Tilt, Shift, Grow, Shrink |
-| Bedroom | Door_1 | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
+| Bedroom | Door_1 | from the start | **yes** | Tilt, Shift, Grow, Shrink, Tint |
 | Bedroom | Flower Vase | after buying | **yes** | Tilt, Shift, Grow, Shrink, Tint |
 | Bedroom | Kettlebell | after buying | **yes** | Tilt, Shift, Grow, Shrink |
 | Bedroom | Lamp | after buying | **yes** | Tilt, Shift, Grow, Shrink, Tint |
 | Bedroom | Pillows | from the start |  | Tilt, Shift, Grow, Shrink |
-| Hallway | Bathroom | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
+| Hallway | Bathroom | from the start | **yes** | Tilt, Shift, Grow, Shrink, Tint |
 | Hallway | Delivery Box 1 | after a purchase |  | Tilt, Shift, Grow, Shrink, Tint |
 | Hallway | Delivery Box 2 | after a purchase |  | Tilt, Shift, Grow, Shrink, Tint |
 | Hallway | Delivery Box 3 | after a purchase |  | Tilt, Shift, Grow, Shrink, Tint |
@@ -52,10 +52,10 @@ Tint (red) only unlocks from Day 4, even where listed.
 | Kitchen | Chimney | from the start |  | Tilt, Shift, Grow, Shrink |
 | Kitchen | Door | from the start |  | Tilt, Shift, Grow, Shrink |
 | Kitchen | Fridge | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
-| Kitchen | Kitchen Sink | from the start |  | Tilt, Shift, Grow, Shrink |
+| Kitchen | Kitchen Sink | from the start | **yes** | Tilt, Shift, Grow, Shrink |
 | Kitchen | Kitchen Sink Cabinet | from the start |  | Tilt, Shift, Grow, Shrink |
 | Kitchen | Kitchen Vents | from the start | **yes** | Tilt, Shift, Grow, Shrink |
-| Kitchen | Kitchen Window | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
+| Kitchen | Kitchen Window | from the start | **yes** | Tilt, Shift, Grow, Shrink, Tint |
 | Kitchen | Plant | after buying | **yes** | Tilt, Shift, Grow, Shrink |
 | Kitchen | Radio | after buying |  | Tilt, Shift, Grow, Shrink |
 | Kitchen | Stove Island | from the start |  | Tilt, Shift, Grow, Shrink |
@@ -67,6 +67,6 @@ Tint (red) only unlocks from Day 4, even where listed.
 | TV Room | Monitor | from the start |  | never (interactive) |
 | TV Room | Smart Speaker | after buying |  | Tilt, Shift, Grow, Shrink |
 | TV Room | Sofa | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
-| TV Room | TV | from the start |  | Tilt, Shift, Grow, Shrink |
+| TV Room | TV | from the start | **yes** | Tilt, Shift, Grow, Shrink |
 | TV Room | Tv Bench | from the start |  | Tilt, Shift |
-| TV Room | TV Room Window | from the start |  | Tilt, Shift, Tint |
+| TV Room | TV Room Window | from the start | **yes** | Tilt, Shift, Tint |

@@ -1,0 +1,1383 @@
+fileFormatVersion: 2
+guid: 2091aa05e486af84881d2614da2d9cdd
+importerOverride:
+  nativeImporterType: 2089858483
+  scriptedImporterType:
+    serializedVersion: 2
+    Hash: b10b55a1aa6a1aa32521bc0cab59632e
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: b2a9591990af98743ba3ff7cf1000886, type: 3}
+  textureImporterSettings:
+    alphaSource: 1
+    mipMapMode: 0
+    enableMipMap: 1
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+    convertToNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+    swizzle: 50462976
+    isReadable: 0
+    streamingMipmaps: 0
+    streamingMipmapsPriority: 0
+    vTOnly: 0
+    ignoreMipmapLimit: 0
+    nPOTScale: 1
+    sRGBTexture: 1
+    spriteMode: 2
+    spriteExtrude: 1
+    spriteMeshType: 1
+    alignment: 0
+    spritePivot: {x: 0.5, y: 0.5}
+    spritePixelsToUnits: 100
+    spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+    spriteGenerateFallbackPhysicsShape: 0
+    generateCubemap: 6
+    cubemapConvolution: 0
+    seamlessCubemap: 0
+    alphaIsTransparency: 1
+    spriteTessellationMethod: 0
+    spriteTessellationDetail: -1
+    spriteGeometrySubdivision: 0
+    textureType: 8
+    textureShape: 1
+    singleChannelComponent: 0
+    flipbookRows: 0
+    flipbookColumns: 0
+    ignorePngGamma: 0
+    cookieMode: 0
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+    normalMap: 0
+    textureFormat: 0
+    maxTextureSize: 0
+    lightmap: 0
+    compressionQuality: 0
+    linearTexture: 0
+    grayScaleToAlpha: 0
+    rGBM: 0
+    cubemapConvolutionSteps: 0
+    cubemapConvolutionExponent: 0
+    maxTextureSizeSet: 0
+    compressionQualitySet: 0
+    textureFormatSet: 0
+    applyGammaDecoding: 0
+  singleSpriteImportData:
+  - name: 
+    originalName: 
+    pivot: {x: 0, y: 0}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    spriteID: 2a081409861958c46bfcaf792799645d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+    spritePosition: {x: 0, y: 0}
+  multiSpriteImportData: []
+  layeredSpriteImportData:
+  - name: Staircase
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7061
+      y: 4
+      width: 549
+      height: 844
+    spriteID: ec2abc97fd81ff34cb66ddd53841868c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5005, y: 4}
+    spritePosition: {x: 2056, y: 0}
+  - name: Bathroom Anomaly
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7618
+      y: 4
+      width: 354
+      height: 612
+    spriteID: 03ce84cb75f122a4cbb6c26b45ce5a23
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5033, y: -6}
+    spritePosition: {x: 2585, y: 10}
+  - name: Layer 35
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7975
+      y: 2614
+      width: 213
+      height: 171
+    spriteID: bfcdc4aa0abd9ab48a65bee4ff5c2924
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 7020, y: 2338}
+    spritePosition: {x: 955, y: 276}
+  - name: Layer 35
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7975
+      y: 2793
+      width: 187
+      height: 119
+    spriteID: 8cf53ca4e3cded14dba6dd6c7ae4eb12
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4511, y: 2533}
+    spritePosition: {x: 3464, y: 260}
+  - name: Layer 35
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7469
+      y: 3597
+      width: 217
+      height: 153
+    spriteID: cdf923fcaee40364a916550e65b075a9
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4426, y: 3524}
+    spritePosition: {x: 3043, y: 73}
+  - name: Package Rack
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6191
+      y: 4
+      width: 862
+      height: 700
+    spriteID: c15e9afdae0fbc846b343bd165ecaf67
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3197, y: -48}
+    spritePosition: {x: 2994, y: 52}
+  - name: Layer 35
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 8042
+      y: 3452
+      width: 93
+      height: 126
+    spriteID: 4e8d2dcb3e3014a468401229d02426fe
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5193, y: 2377}
+    spritePosition: {x: 2849, y: 1075}
+  - name: Layer 29
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6607
+      y: 3977
+      width: 184
+      height: 99
+    spriteID: d9b34975dce0e9e4986947e605912f12
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2986, y: 2811}
+    spritePosition: {x: 3621, y: 1166}
+  - name: Monitor
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7125
+      y: 3802
+      width: 268
+      height: 229
+    spriteID: 012dc7ddd3b001f45ab0081c4953fde2
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3789, y: 2635}
+    spritePosition: {x: 3336, y: 1167}
+  - name: Sofa
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4766
+      y: 3452
+      width: 760
+      height: 293
+    spriteID: 73084e2334800fa4283764a9ccfdb4d3
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2622, y: 2598}
+    spritePosition: {x: 2144, y: 854}
+  - name: Tv Bench
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7125
+      y: 3452
+      width: 909
+      height: 137
+    spriteID: cb8a3d13f191ae2478a0e33edc17f682
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5052, y: 2485}
+    spritePosition: {x: 2073, y: 967}
+  - name: Desk
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6193
+      y: 2614
+      width: 1029
+      height: 365
+    spriteID: af1336b2414e9024586d3aa6605e6e89
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3126, y: 1753}
+    spritePosition: {x: 3067, y: 861}
+  - name: TV Room Window Anomaly
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6193
+      y: 2987
+      width: 809
+      height: 383
+    spriteID: 16d1ba4130f502d44981cdce4d10e2a0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3041, y: 1712}
+    spritePosition: {x: 3152, y: 1275}
+  - name: TV Anomaly
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 5534
+      y: 3827
+      width: 472
+      height: 256
+    spriteID: 3ca72b5c778048046abb6eb6997de111
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3211, y: 2595}
+    spritePosition: {x: 2323, y: 1232}
+  - name: TV
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7618
+      y: 624
+      width: 472
+      height: 256
+    spriteID: 6ba578fc16bda264ea85e4b3d008d390
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5295, y: -608}
+    spritePosition: {x: 2323, y: 1232}
+  - name: Chimney
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4766
+      y: 3753
+      width: 308
+      height: 223
+    spriteID: 49250750dd7ddfe40a1db62b17d14d96
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4202, y: 3134}
+    spritePosition: {x: 564, y: 619}
+  - name: Stove Island
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7230
+      y: 2614
+      width: 737
+      height: 327
+    spriteID: 21663db816c07d74a94fb8c570b09132
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 6697, y: 2590}
+    spritePosition: {x: 533, y: 24}
+  - name: Kitchen Vents Anomaly
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 5082
+      y: 3753
+      width: 310
+      height: 219
+    spriteID: 1f1582bf04cfb0d42942f62875a72d20
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3369, y: 3139}
+    spritePosition: {x: 1713, y: 614}
+  - name: Fridge
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6050
+      y: 3452
+      width: 275
+      height: 557
+    spriteID: 8a23906ae2882f344ae5fad323c288da
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4472, y: 3287}
+    spritePosition: {x: 1578, y: 165}
+  - name: Door
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6607
+      y: 3452
+      width: 251
+      height: 517
+    spriteID: 2993fce49e144da4eb33c2e13962f8a5
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5297, y: 3251}
+    spritePosition: {x: 1310, y: 201}
+  - name: Kitchen Sink Anomaly
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7125
+      y: 3597
+      width: 336
+      height: 197
+    spriteID: ea35a3340da282442a714589cf308068
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 7121, y: 3375}
+    spritePosition: {x: 4, y: 222}
+  - name: Kitchen Sink Cabinet
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7737
+      y: 2987
+      width: 387
+      height: 384
+    spriteID: 61f6db97099f15d48b7cef3efadbcbd9
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 7737, y: 2987}
+    spritePosition: {x: 0, y: 0}
+  - name: Kitchen Window
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 5534
+      y: 3452
+      width: 508
+      height: 367
+    spriteID: 9c1386c697e14954589de330589f6f44
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5534, y: 3101}
+    spritePosition: {x: 0, y: 351}
+  - name: Bedroom Rug
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6191
+      y: 712
+      width: 792
+      height: 83
+    spriteID: 7f81fef7df6727b4e9e74cf1ee50c4d4
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5870, y: -202}
+    spritePosition: {x: 321, y: 914}
+  - name: Door Anomaly
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6866
+      y: 3452
+      width: 251
+      height: 517
+    spriteID: 75b69a9a6663bab489514eaeaf41c30d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5828, y: 2430}
+    spritePosition: {x: 1038, y: 1022}
+  - name: Pillows
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6866
+      y: 3977
+      width: 123
+      height: 83
+    spriteID: fe4cb3a91cb60404c8e73324aa4e9a2f
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5014, y: 2868}
+    spritePosition: {x: 1852, y: 1109}
+  - name: Blanket
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4108
+      y: 3825
+      width: 577
+      height: 201
+    spriteID: 92ed370519fd3da4fa0045f7a125b50a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2821, y: 2847}
+    spritePosition: {x: 1287, y: 978}
+  - name: Bed
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 7010
+      y: 2987
+      width: 719
+      height: 335
+    spriteID: fb058ae5cca25244ab204f41a3d30ddd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 5722, y: 2073}
+    spritePosition: {x: 1288, y: 914}
+  - name: Bedroom Cabinet Anomaly
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6333
+      y: 3452
+      width: 266
+      height: 560
+    spriteID: ea2fb112e13c391418bbb720e976a194
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 6322, y: 2532}
+    spritePosition: {x: 11, y: 920}
+  - name: Bedroom Window
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4108
+      y: 3452
+      width: 650
+      height: 365
+    spriteID: d9c371037ebd30f48acf69eeba4a3c0b
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3739, y: 2281}
+    spritePosition: {x: 369, y: 1171}
+  - name: From selection
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4108
+      y: 890
+      width: 90
+      height: 652
+    spriteID: 0f42405505bfc4044a8c66087f1b03a3
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 102, y: 890}
+    spritePosition: {x: 4006, y: 0}
+  - name: From selection
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4108
+      y: 1726
+      width: 2025
+      height: 880
+    spriteID: 84fd52b96cf66fa4dbf9af6eed1cf01a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4108, y: 892}
+    spritePosition: {x: 0, y: 834}
+  - name: From selection
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4108
+      y: 4
+      width: 2075
+      height: 878
+    spriteID: c0e83b04eb94d2a4bbb9ce78c526ddcc
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2087, y: -832}
+    spritePosition: {x: 2021, y: 836}
+  - name: From selection
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4108
+      y: 2614
+      width: 2077
+      height: 830
+    spriteID: 830f645e8fbe13f438d7ed40ca28e230
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2089, y: 2614}
+    spritePosition: {x: 2019, y: 0}
+  - name: From selection
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 6141
+      y: 1726
+      width: 2023
+      height: 848
+    spriteID: 90c4109ad88ffac4fb1d15b053259c86
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 6141, y: 1726}
+    spritePosition: {x: 0, y: 0}
+  - name: Layer 7
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 4096
+      height: 1714
+    spriteID: a811be096e46cd845a6b7be89528237c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 4}
+    spritePosition: {x: 0, y: 0}
+  - name: Background
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 1726
+      width: 4096
+      height: 1714
+    spriteID: 43017d7b1d2744f49be2657860bdd2bd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 1726}
+    spritePosition: {x: 0, y: 0}
+  spriteImportData: []
+  rigSpriteImportData: []
+  sharedRigSpriteImportData: []
+  mosaicSpriteImportData: []
+  sharedRigCharacterData:
+    bones: []
+    parts: []
+    dimension: {x: 0, y: 0}
+    characterGroups: []
+    pivot: {x: 0, y: 0}
+    boneReadOnly: 0
+  characterData:
+    bones: []
+    parts: []
+    dimension: {x: 0, y: 0}
+    characterGroups: []
+    pivot: {x: 0, y: 0}
+    boneReadOnly: 0
+  platformSettings:
+  - name: DefaultTexturePlatform
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Standalone
+    overridden: 1
+    ignorePlatformSupport: 0
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: 12
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: WebGL
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  mosaicLayers: 1
+  characterMode: 1
+  documentPivot: {x: 0, y: 0}
+  documentAlignment: 7
+  importHiddenLayers: 0
+  layerMappingOption: 2
+  generatePhysicsShape: 1
+  paperDollMode: 0
+  keepDupilcateSpriteName: 1
+  generateTileAssets: 0
+  tilePaletteCellLayout: 0
+  tilePaletteHexagonLayout: 0
+  tilePaletteCellSize: {x: 1, y: 1, z: 0}
+  tilePaletteCellSizing: 0
+  transparencySortMode: 0
+  transparencySortAxis: {x: 0, y: 0, z: 1}
+  tileTemplate: {instanceID: 0}
+  padding: 4
+  spriteSizeExpand: 0
+  skeletonAssetReferenceID: 
+  pipeline: {instanceID: 0}
+  pipelineVersion: 
+  spriteCategoryList:
+    categories: []
+  spritePackingTag: 
+  resliceFromLayer: 0
+  pSDLayerImportSetting: []
+  psdLayers:
+  - name: Staircase
+    spriteName: Staircase
+    isGroup: 0
+    parentIndex: -1
+    spriteID: ec2abc97fd81ff34cb66ddd53841868c
+    layerID: 37
+    mosaicPosition: {x: 7061, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Bathroom Anomaly
+    spriteName: Bathroom Anomaly
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 03ce84cb75f122a4cbb6c26b45ce5a23
+    layerID: 36
+    mosaicPosition: {x: 7618, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Layer 35
+    spriteName: Layer 35
+    isGroup: 0
+    parentIndex: -1
+    spriteID: bfcdc4aa0abd9ab48a65bee4ff5c2924
+    layerID: 35
+    mosaicPosition: {x: 7975, y: 2614}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Layer 35
+    spriteName: Layer 35
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 8cf53ca4e3cded14dba6dd6c7ae4eb12
+    layerID: 34
+    mosaicPosition: {x: 7975, y: 2793}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Layer 35
+    spriteName: Layer 35
+    isGroup: 0
+    parentIndex: -1
+    spriteID: cdf923fcaee40364a916550e65b075a9
+    layerID: 33
+    mosaicPosition: {x: 7469, y: 3597}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Package Rack
+    spriteName: Package Rack
+    isGroup: 0
+    parentIndex: -1
+    spriteID: c15e9afdae0fbc846b343bd165ecaf67
+    layerID: 32
+    mosaicPosition: {x: 6191, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Layer 35
+    spriteName: Layer 35
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 4e8d2dcb3e3014a468401229d02426fe
+    layerID: 31
+    mosaicPosition: {x: 8042, y: 3452}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Layer 29
+    spriteName: Layer 29
+    isGroup: 0
+    parentIndex: -1
+    spriteID: d9b34975dce0e9e4986947e605912f12
+    layerID: 30
+    mosaicPosition: {x: 6607, y: 3977}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Monitor
+    spriteName: Monitor
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 012dc7ddd3b001f45ab0081c4953fde2
+    layerID: 29
+    mosaicPosition: {x: 7125, y: 3802}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Sofa
+    spriteName: Sofa
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 73084e2334800fa4283764a9ccfdb4d3
+    layerID: 28
+    mosaicPosition: {x: 4766, y: 3452}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Tv Bench
+    spriteName: Tv Bench
+    isGroup: 0
+    parentIndex: -1
+    spriteID: cb8a3d13f191ae2478a0e33edc17f682
+    layerID: 27
+    mosaicPosition: {x: 7125, y: 3452}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Desk
+    spriteName: Desk
+    isGroup: 0
+    parentIndex: -1
+    spriteID: af1336b2414e9024586d3aa6605e6e89
+    layerID: 26
+    mosaicPosition: {x: 6193, y: 2614}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: TV Room Window Anomaly
+    spriteName: TV Room Window Anomaly
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 16d1ba4130f502d44981cdce4d10e2a0
+    layerID: 25
+    mosaicPosition: {x: 6193, y: 2987}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: TV Anomaly
+    spriteName: TV Anomaly
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 3ca72b5c778048046abb6eb6997de111
+    layerID: 24
+    mosaicPosition: {x: 5534, y: 3827}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: TV
+    spriteName: TV
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 6ba578fc16bda264ea85e4b3d008d390
+    layerID: 23
+    mosaicPosition: {x: 7618, y: 624}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Chimney
+    spriteName: Chimney
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 49250750dd7ddfe40a1db62b17d14d96
+    layerID: 22
+    mosaicPosition: {x: 4766, y: 3753}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Stove Island
+    spriteName: Stove Island
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 21663db816c07d74a94fb8c570b09132
+    layerID: 21
+    mosaicPosition: {x: 7230, y: 2614}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Kitchen Vents Anomaly
+    spriteName: Kitchen Vents Anomaly
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 1f1582bf04cfb0d42942f62875a72d20
+    layerID: 20
+    mosaicPosition: {x: 5082, y: 3753}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Fridge
+    spriteName: Fridge
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 8a23906ae2882f344ae5fad323c288da
+    layerID: 19
+    mosaicPosition: {x: 6050, y: 3452}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Door
+    spriteName: Door
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 2993fce49e144da4eb33c2e13962f8a5
+    layerID: 18
+    mosaicPosition: {x: 6607, y: 3452}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Kitchen Sink Anomaly
+    spriteName: Kitchen Sink Anomaly
+    isGroup: 0
+    parentIndex: -1
+    spriteID: ea35a3340da282442a714589cf308068
+    layerID: 17
+    mosaicPosition: {x: 7125, y: 3597}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Kitchen Sink Cabinet
+    spriteName: Kitchen Sink Cabinet
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 61f6db97099f15d48b7cef3efadbcbd9
+    layerID: 16
+    mosaicPosition: {x: 7737, y: 2987}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Kitchen Window
+    spriteName: Kitchen Window
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 9c1386c697e14954589de330589f6f44
+    layerID: 15
+    mosaicPosition: {x: 5534, y: 3452}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Bedroom Rug
+    spriteName: Bedroom Rug
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 7f81fef7df6727b4e9e74cf1ee50c4d4
+    layerID: 14
+    mosaicPosition: {x: 6191, y: 712}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Door Anomaly
+    spriteName: Door Anomaly
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 75b69a9a6663bab489514eaeaf41c30d
+    layerID: 13
+    mosaicPosition: {x: 6866, y: 3452}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Pillows
+    spriteName: Pillows
+    isGroup: 0
+    parentIndex: -1
+    spriteID: fe4cb3a91cb60404c8e73324aa4e9a2f
+    layerID: 12
+    mosaicPosition: {x: 6866, y: 3977}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Blanket
+    spriteName: Blanket
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 92ed370519fd3da4fa0045f7a125b50a
+    layerID: 11
+    mosaicPosition: {x: 4108, y: 3825}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Bed
+    spriteName: Bed
+    isGroup: 0
+    parentIndex: -1
+    spriteID: fb058ae5cca25244ab204f41a3d30ddd
+    layerID: 10
+    mosaicPosition: {x: 7010, y: 2987}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Bedroom Cabinet Anomaly
+    spriteName: Bedroom Cabinet Anomaly
+    isGroup: 0
+    parentIndex: -1
+    spriteID: ea2fb112e13c391418bbb720e976a194
+    layerID: 9
+    mosaicPosition: {x: 6333, y: 3452}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Bedroom Window
+    spriteName: Bedroom Window
+    isGroup: 0
+    parentIndex: -1
+    spriteID: d9c371037ebd30f48acf69eeba4a3c0b
+    layerID: 8
+    mosaicPosition: {x: 4108, y: 3452}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: From selection
+    spriteName: From selection
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 0f42405505bfc4044a8c66087f1b03a3
+    layerID: 7
+    mosaicPosition: {x: 4108, y: 890}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: From selection
+    spriteName: From selection
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 84fd52b96cf66fa4dbf9af6eed1cf01a
+    layerID: 6
+    mosaicPosition: {x: 4108, y: 1726}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: From selection
+    spriteName: From selection
+    isGroup: 0
+    parentIndex: -1
+    spriteID: c0e83b04eb94d2a4bbb9ce78c526ddcc
+    layerID: 5
+    mosaicPosition: {x: 4108, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: From selection
+    spriteName: From selection
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 830f645e8fbe13f438d7ed40ca28e230
+    layerID: 4
+    mosaicPosition: {x: 4108, y: 2614}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: From selection
+    spriteName: From selection
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 90c4109ad88ffac4fb1d15b053259c86
+    layerID: 3
+    mosaicPosition: {x: 6141, y: 1726}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Layer 7
+    spriteName: Layer 7
+    isGroup: 0
+    parentIndex: -1
+    spriteID: a811be096e46cd845a6b7be89528237c
+    layerID: 2
+    mosaicPosition: {x: 4, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Background
+    spriteName: Background
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 43017d7b1d2744f49be2657860bdd2bd
+    layerID: 1
+    mosaicPosition: {x: 4, y: 1726}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  mosaicPSDLayers: []
+  rigPSDLayers: []
+  sharedRigPSDLayers: []
+  importFileNodeState: 1
+  platformSettingsDirtyTick: 0
+  spriteSizeExpandChanged: 0
+  generateGOHierarchy: 0
+  textureAssetName: 
+  prefabAssetName: 
+  spriteLibAssetName: 
+  skeletonAssetName: 
+  secondarySpriteTextures: []

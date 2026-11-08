@@ -102,6 +102,9 @@ public static class CozyInspect
         foreach (var item in Object.FindObjectsByType<ShopItem>(FindObjectsInactive.Include)) item.gameObject.SetActive(true);
         var shop = Object.FindAnyObjectByType<Shop>();
         foreach (var b in shop.deliveryBoxes) b.SetActive(true);
+        if (System.Environment.GetEnvironmentVariable("COZY_ANOMALIES") == "1")
+            foreach (var p in Object.FindObjectsByType<Prop>(FindObjectsInactive.Include))
+                if (p.anomalySprite != null && p.gameObject.activeInHierarchy) { p.GetComponent<SpriteRenderer>().sprite = p.anomalySprite; p.transform.localPosition += p.anomalyOffset; p.transform.localScale *= p.anomalySpriteScale; }
 
         var rc = Object.FindAnyObjectByType<RoomCamera>();
         var cam = rc.GetComponent<Camera>();

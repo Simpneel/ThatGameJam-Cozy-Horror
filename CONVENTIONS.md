@@ -5,7 +5,7 @@
 ```
 Art/
   Source/          Layered PSDs (hand-drawn masters, imported directly by Unity's PSD Importer)
-    Rooms/         PSD_House, PSD_Balcony, PSD_Bathroom
+    Rooms/         PSD_House, PSD_House_Anomaly (drawn anomaly versions of house furniture), PSD_Balcony, PSD_Bathroom
     Props/         PSD_Props_01, PSD_Props_02, PSD_Flyer
     UI/            PSD_ComputerScreen, PSD_DialogueBoxes
     Screens/       PSD_MainMenu (title), PSD_Instructions ("What to do?"), PSD_WinScreen, PSD_EndScreen, PSD_Credits

@@ -17,6 +17,7 @@ public static class CozyBuilder
 {
     const string ScenePath = "Assets/Scenes/Game.unity";
     const string HousePsd = "Assets/Art/Source/Rooms/PSD_House.psd";
+    const string HouseAnomalyPsd = "Assets/Art/Source/Rooms/PSD_House_Anomaly.psd";
     const string BathroomPsd = "Assets/Art/Source/Rooms/PSD_Bathroom.psd";
     const string BalconyPsd = "Assets/Art/Source/Rooms/PSD_Balcony.psd";
     const string Props1Psd = "Assets/Art/Source/Props/PSD_Props_01.psd";
@@ -131,6 +132,7 @@ public static class CozyBuilder
         var bedProps = new List<Prop>();
         var computerProps = new List<Prop>();
         SetupHouse(house, props, bedProps, computerProps);
+        WireHouseAnomalies(house);
         SetupRoomPsd(bathroom, BathroomLayers, new[] { "Layer 3_1", "Layer 1", "Background" }, null, props);
         SetupRoomPsd(balcony, BalconyLayers, new[] { "Layer 7", "Layer 6", "Layer 6_1", "Layer 2", "Layer 1", "Background" }, new[] { "Layer 9_1" }, props);
         // Balcony cup: the lower "Layer 9_1" is its drawn anomaly version (white lines).
@@ -257,6 +259,36 @@ public static class CozyBuilder
 
     // ------------------------------------------------------------------ world
 
+    /// Drawn anomaly versions from PSD_House_Anomaly (same canvas as PSD_House): house prop name -> anomaly layer.
+    static readonly (string prop, string layer)[] HouseAnomalyPairs =
+    {
+        ("Bedroom Cabinet", "Bedroom Cabinet Anomaly"),
+        ("Door_1", "Door Anomaly"),
+        ("Kitchen Vents", "Kitchen Vents Anomaly"),
+        ("Kitchen Sink", "Kitchen Sink Anomaly"),
+        ("Kitchen Window", "Kitchen Window"),
+        ("TV", "TV Anomaly"),
+        ("TV Room Window", "TV Room Window Anomaly"),
+        ("Bathroom", "Bathroom Anomaly"),
+    };
+
+    static void WireHouseAnomalies(Transform house)
+    {
+        var src = (GameObject)Object.Instantiate(Load<GameObject>(HouseAnomalyPsd));
+        src.transform.position = house.position;
+        var props = house.GetComponentsInChildren<Prop>(true);
+        foreach (var (propName, layer) in HouseAnomalyPairs)
+        {
+            var prop = props.FirstOrDefault(p => p.name == propName);
+            var a = src.GetComponentsInChildren<SpriteRenderer>(true).FirstOrDefault(s => s.name == layer);
+            if (prop == null || a == null) { Debug.LogError($"[Cozy] Anomaly pair missing: {propName} / {layer}"); continue; }
+            prop.anomalySprite = a.sprite;
+            prop.anomalySpriteScale = 1f;
+            prop.anomalyOffset = prop.transform.parent.InverseTransformVector(a.transform.position - prop.transform.position);
+        }
+        Object.DestroyImmediate(src);
+    }
+
     static Transform Psd(string path, Transform parent, Vector3 pos)
     {
         var go = (GameObject)PrefabUtility.InstantiatePrefab(Load<GameObject>(path));
@@ -319,7 +351,7 @@ public static class CozyBuilder
             if (n == "Blanket" || n == "Pillows") bedProps.Add(prop);
             if (n == "Monitor") { prop.canBeAnomalous = false; computerProps.Add(prop); }
             if (alias == "@laptop") computerProps.Add(prop);
-            if (sr.transform == normalVents) { sr.name = "Kitchen Vents"; prop.anomalySprite = anomalyVents.GetComponent<SpriteRenderer>().sprite; }
+            if (sr.transform == normalVents) sr.name = "Kitchen Vents";
             if (n == "Bedroom Rug")
             {
                 prop.anomalySprite = PsdSprite(Props1Psd, "Anomaly Rug");

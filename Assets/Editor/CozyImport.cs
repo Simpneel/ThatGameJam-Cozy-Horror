@@ -10,6 +10,7 @@ public static class CozyImport
         "Assets/Art/Source/Props/PSD_Props_02.psd",
         "Assets/Art/Source/UI/PSD_DialogueBoxes.psd",
         "Assets/Art/Source/Props/PSD_Flyer.psd",
+        "Assets/Art/Source/Rooms/PSD_House_Anomaly.psd",
     };
 
     [MenuItem("Cozy Horror/Reimport Layered PSDs")]
@@ -36,6 +37,7 @@ public static class CozyImport
     static readonly string[] WorldPsds =
     {
         "Assets/Art/Source/Rooms/PSD_House.psd",
+        "Assets/Art/Source/Rooms/PSD_House_Anomaly.psd",
         "Assets/Art/Source/Rooms/PSD_Bathroom.psd",
         "Assets/Art/Source/Rooms/PSD_Balcony.psd",
         "Assets/Art/Source/Props/PSD_Props_01.psd",

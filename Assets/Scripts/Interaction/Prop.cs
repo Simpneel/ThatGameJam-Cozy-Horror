@@ -20,6 +20,8 @@ public class Prop : MonoBehaviour
     public Sprite anomalySprite;
     [Tooltip("Scale applied while the anomaly sprite is shown (for anomaly art drawn at a different size).")]
     public float anomalySpriteScale = 1f;
+    [Tooltip("Position offset applied while the anomaly sprite is shown (drawn art that sits slightly differently).")]
+    public Vector3 anomalyOffset;
     [Tooltip("Procedural anomalies that are clearly visible on this object. Filled in by the scene builder from the sprite's size, brightness and symmetry.")]
     public AnomalyKind[] allowedKinds = new AnomalyKind[0];
 
@@ -120,6 +122,7 @@ public class Prop : MonoBehaviour
                 if (anomalySprite == null) return false;
                 sr.sprite = anomalySprite;
                 aScale = anomalySpriteScale;
+                aPos = anomalyOffset;
                 break;
             case AnomalyKind.Tilt: aRot = sign * UnityEngine.Random.Range(7f, 10f) * Mathf.Lerp(1f, 2f, intensity); break; // 7-10° early, up to 14-20°
             case AnomalyKind.Shift: aPos = new Vector3(sign * Mathf.Clamp(size * Mathf.Lerp(0.13f, 0.25f, intensity), 0.25f, 1f), 0f, 0f); break;
