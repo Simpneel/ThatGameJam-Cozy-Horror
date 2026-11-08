@@ -1,98 +1,63 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
-/// Single source of truth: visible money, hidden score, owned item IDs. Saves to JSON.
+/// The run's hidden state. Nothing here is ever shown to the player.
+/// No save file: every launch is a fresh run (see DESIGN.md).
 public static class PlayerState
 {
-    [Serializable]
-    class SaveData
-    {
-        public int money;
-        public float score;
-        public List<string> owned = new List<string>();
-    }
+    public static int Day { get; private set; }
+    public static int Points { get; private set; }          // spendable, hidden
+    public static int PointsEarned { get; private set; }    // lifetime from anomalies (arms the win streak)
+    public static int PurchasesToday { get; private set; }
+    public static int NoPurchaseStreak { get; private set; } // counted only once the streak is armed
 
-    static SaveData data;
-    static string SavePath => Path.Combine(Application.persistentDataPath, "save.json");
+    static readonly HashSet<string> owned = new HashSet<string>();
 
-    public static event Action<int> OnMoneyChanged;   // new money total
-    public static event Action<string> OnItemOwned;   // item id
+    public static event Action<string> OnItemOwned;
 
-    public static int Money { get { Ensure(); return data.money; } }
-    public static float Score { get { Ensure(); return data.score; } } // hidden from the player
-
-    // Keeps statics clean when "Enter Play Mode" skips domain reload.
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    static void ResetStatics()
+    static void ResetStatics() { OnItemOwned = null; Reset(0); }
+
+    public static void Reset(int startingPoints)
     {
-        data = null;
-        OnMoneyChanged = null;
-        OnItemOwned = null;
+        Day = 0;
+        Points = startingPoints;
+        PointsEarned = 0;
+        PurchasesToday = 0;
+        NoPurchaseStreak = 0;
+        owned.Clear();
     }
 
-    static void Ensure()
+    public static bool Owns(string id) => owned.Contains(id);
+    public static int OwnedCount => owned.Count;
+
+    public static void EarnPoint(int amount = 1)
     {
-        if (data != null) return;
-        try
-        {
-            data = File.Exists(SavePath)
-                ? JsonUtility.FromJson<SaveData>(File.ReadAllText(SavePath))
-                : new SaveData();
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning("Could not read save, starting fresh: " + e.Message);
-            data = new SaveData();
-        }
-        if (data == null) data = new SaveData();
+        Points += amount;
+        PointsEarned += amount;
     }
 
-    static void Save()
+    public static bool TryBuy(string id, int price)
     {
-        try { File.WriteAllText(SavePath, JsonUtility.ToJson(data)); }
-        catch (Exception e) { Debug.LogWarning("Could not write save: " + e.Message); }
-    }
-
-    public static bool Owns(string id) { Ensure(); return data.owned.Contains(id); }
-
-    public static bool Own(string id)
-    {
-        Ensure();
-        if (string.IsNullOrEmpty(id) || data.owned.Contains(id)) return false;
-        data.owned.Add(id);
-        Save();
+        if (owned.Contains(id) || Points < price) return false;
+        Points -= price;
+        PurchasesToday++;
+        owned.Add(id);
         OnItemOwned?.Invoke(id);
         return true;
     }
 
-    public static void AddMoney(int amount)
+    /// Call at bedtime, before StartNextDay. Updates the hidden win streak.
+    public static void EndDay(int pointsToArmStreak)
     {
-        Ensure();
-        data.money = Mathf.Max(0, data.money + amount);
-        Save();
-        OnMoneyChanged?.Invoke(data.money);
+        if (PointsEarned >= pointsToArmStreak)
+            NoPurchaseStreak = PurchasesToday == 0 ? NoPurchaseStreak + 1 : 0;
     }
 
-    public static bool TrySpend(int amount)
+    public static void StartNextDay()
     {
-        Ensure();
-        if (data.money < amount) return false;
-        AddMoney(-amount);
-        return true;
-    }
-
-    public static void AddScore(float amount)
-    {
-        Ensure();
-        data.score = Mathf.Max(0f, data.score + amount);
-        Save();
-    }
-
-    public static void ResetAll()
-    {
-        data = new SaveData();
-        Save();
+        Day++;
+        PurchasesToday = 0;
     }
 }

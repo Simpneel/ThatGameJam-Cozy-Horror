@@ -1,61 +1,53 @@
-using System;
 using UnityEngine;
 
-/// Turns clicks into finds or misses. Only objects with a Collider2D can be clicked.
+/// Finds the top-most Prop under the pointer each frame: hover feedback, then click.
+/// Only Props with a Collider2D are clickable; walls and backgrounds are ignored.
 public class ClickHandler : MonoBehaviour
 {
-    public static event Action<AnomalyDefinition> OnFound;
-    public static event Action OnMiss;
-
-    /// Set true while the PC overlay (or any UI) is open so clicks don't reach the room.
-    public static bool InputBlocked;
-
     [SerializeField] Camera cam;
-    [SerializeField] float missPenalty = 0.5f;   // hidden score lost on a wrong click
-    [SerializeField] AudioClip missSound;
 
-    AudioSource audioSource;
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    static void ResetStatics() { OnFound = null; OnMiss = null; InputBlocked = false; }
+    Prop hovered;
+    readonly System.Collections.Generic.List<Collider2D> hits = new System.Collections.Generic.List<Collider2D>();
+    ContactFilter2D filter;
 
     void Awake()
     {
         if (cam == null) cam = Camera.main;
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        filter = new ContactFilter2D { useTriggers = true };
+        filter.NoFilter();
     }
 
     void Update()
     {
-        if (InputBlocked || !GameInput.Click(out Vector2 screenPos)) return;
+        Prop target = null;
+        bool canInteract = GameManager.Instance == null || GameManager.Instance.WorldInputEnabled;
+        if (canInteract && !GameInput.PointerOverUI && cam != null)
+            target = PropUnderPointer();
 
-        Vector2 world = cam.ScreenToWorldPoint(screenPos);
-        Collider2D best = null;
-        int bestOrder = int.MinValue;
-        foreach (var hit in Physics2D.OverlapPointAll(world))
+        if (target != hovered)
         {
-            var sr = hit.GetComponent<SpriteRenderer>();
-            int order = sr != null ? sr.sortingOrder : 0;
-            if (best == null || order > bestOrder) { best = hit; bestOrder = order; }
+            if (hovered != null) hovered.Hovered = false;
+            hovered = target;
+            if (hovered != null) hovered.Hovered = true;
         }
-        if (best == null) return; // clicked empty space: ignored
 
-        var anomalous = best.GetComponentInParent<IAnomalous>();
-        if (anomalous != null && anomalous.IsActive)
+        if (target != null && GameInput.ClickedThisFrame) target.Click();
+    }
+
+    Prop PropUnderPointer()
+    {
+        Vector2 world = cam.ScreenToWorldPoint(GameInput.PointerPosition);
+        int count = Physics2D.OverlapPoint(world, filter, hits);
+        Prop best = null;
+        long bestKey = long.MinValue;
+        for (int i = 0; i < count; i++)
         {
-            var def = anomalous.Current;
-            anomalous.Resolve();
-            PlayerState.AddMoney(def.reward);
-            PlayerState.AddScore(def.scoreGain);
-            if (def.foundSound != null) audioSource.PlayOneShot(def.foundSound);
-            OnFound?.Invoke(def);
+            var prop = hits[i].GetComponentInParent<Prop>();
+            if (prop == null || !prop.isActiveAndEnabled) continue;
+            var sr = prop.GetComponent<SpriteRenderer>();
+            long key = ((long)SortingLayer.GetLayerValueFromID(sr.sortingLayerID) << 32) + sr.sortingOrder;
+            if (best == null || key > bestKey) { best = prop; bestKey = key; }
         }
-        else
-        {
-            PlayerState.AddScore(-missPenalty);
-            if (missSound != null) audioSource.PlayOneShot(missSound);
-            OnMiss?.Invoke();
-        }
+        return best;
     }
 }
