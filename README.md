@@ -21,6 +21,7 @@
 
 ## Where things are
 
+- [WIN_CONDITIONS.txt](WIN_CONDITIONS.txt) and [DEBUFFS.txt](DEBUFFS.txt): plain-text rules for endings and everything that makes life harder.
 - [DESIGN.md](DESIGN.md): rules, endings and every tuning number (all editable on the `Game` object in the Inspector).
 - [ANOMALIES.md](ANOMALIES.md): every object and what can go wrong with it (generated).
 - [CONVENTIONS.md](CONVENTIONS.md): folder layout and file naming.

@@ -1,0 +1,42 @@
+WHILE STOCKS LAST! - HOW THE GAME ENDS (exact rules, all hidden from the player)
+===============================================================================
+
+POINTS
+------
+- You start with 2 points (enough for one cheap Day 1 purchase).
+- +1 point for every anomaly you fix, whatever kind it is (drawn art, tilt, shift,
+  grow, shrink, red tint, vanished object), and +1 for clicking an anomaly flyer.
+- An anomaly left unfound for 3 days can still be fixed, but pays 0 points
+  (example: appears Day 2 -> pays only if found on Day 2, 3 or 4). You hear a dull
+  thunk instead of the bright chime.
+- Two hidden counters:
+    Points        = your balance. Shop purchases spend it.
+    PointsEarned  = lifetime total from fixes/flyers. Never goes down. Only used
+                    to unlock the win streak.
+
+WIN  (checked every time you go to bed, including forced sleep)
+---
+1. Earn 8 points in total (PointsEarned >= 8). This "arms" the win streak.
+   Spending doesn't undo it.
+2. Once armed, each bedtime updates the streak:
+     - You bought anything today            -> streak resets to 0
+     - No purchase AND fixed 2+ anomalies   -> streak +1
+     - No purchase but fixed 0-1 anomalies  -> streak unchanged (an idle day doesn't count)
+   Fixes that paid 0 points (expired) still count toward the 2.
+3. Streak reaches 3 -> you WIN.
+
+The day you reach 8 points counts too, if you also bought nothing and fixed 2+.
+Earliest realistic win: around Day 6. A typical player: Day 7-10.
+
+LOSE  (checked at bedtime, BEFORE the win check)
+----
+- Own every shop item (9 items) -> you LOSE ("Womp womp!" screen).
+- Owning everything beats a finished win streak on the same night.
+
+Both endings go to the credits, then back to the start screen for a new game
+(Day 1, 2 points, nothing owned, house back to normal).
+
+TUNING (Inspector, "Game" object)
+------
+pointsToArmWinStreak = 8, winStreakDays = 3, minFixesPerStreakDay = 2,
+startingPoints = 2. Per object: pointExpiryDays = 3, cooldownDays = 1.
