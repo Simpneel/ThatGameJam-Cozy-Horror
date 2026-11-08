@@ -134,6 +134,12 @@ public static class CozyBuilder
         SetupHouse(house, props, bedProps, computerProps);
         WireHouseAnomalies(house);
         SetupRoomPsd(bathroom, BathroomLayers, new[] { "Layer 3_1", "Layer 1", "Background" }, null, props);
+        // Shower curtain: "Curtain Fold" is the open version. Clicking swaps between closed and open.
+        var curtainClosed = bathroom.Find("Shower Curtain").GetComponent<Prop>();
+        var curtainOpen = bathroom.Find("Curtain Fold").GetComponent<Prop>();
+        curtainOpen.name = "Shower Curtain (Open)";
+        curtainClosed.toggleTo = curtainOpen; curtainOpen.toggleTo = curtainClosed;
+        curtainOpen.gameObject.SetActive(false);
         SetupRoomPsd(balcony, BalconyLayers, new[] { "Layer 7", "Layer 6", "Layer 6_1", "Layer 2", "Layer 1", "Background" }, new[] { "Layer 9_1" }, props);
         // Balcony cup: the lower "Layer 9_1" is its drawn anomaly version (white lines).
         balcony.Find("Cup").GetComponent<Prop>().anomalySprite = balcony.Find("Layer 9_1").GetComponent<SpriteRenderer>().sprite;

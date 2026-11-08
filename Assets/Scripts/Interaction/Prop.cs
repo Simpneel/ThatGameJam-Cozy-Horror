@@ -22,6 +22,10 @@ public class Prop : MonoBehaviour
     public float anomalySpriteScale = 1f;
     [Tooltip("Position offset applied while the anomaly sprite is shown (drawn art that sits slightly differently).")]
     public Vector3 anomalyOffset;
+
+    [Header("Toggle")]
+    [Tooltip("If set, a normal click hides this object and shows that one instead (e.g. closed/open shower curtain).")]
+    public Prop toggleTo;
     [Tooltip("Procedural anomalies that are clearly visible on this object. Filled in by the scene builder from the sprite's size, brightness and symmetry.")]
     public AnomalyKind[] allowedKinds = new AnomalyKind[0];
 
@@ -90,6 +94,7 @@ public class Prop : MonoBehaviour
         Wiggle();
         Sfx.Play(clickSound, volume, UnityEngine.Random.Range(0.94f, 1.06f));
         Clicked?.Invoke(this);
+        if (toggleTo != null) { toggleTo.gameObject.SetActive(true); toggleTo.Pop(0.85f); gameObject.SetActive(false); }
     }
 
     public void Wiggle(float strength = 1f) { wiggleT = 0f; wiggleAmp = 7f * strength; }

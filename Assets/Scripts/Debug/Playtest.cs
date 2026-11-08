@@ -66,6 +66,11 @@ public class Playtest : MonoBehaviour
         Check(PlayerState.Day == 1, "Day 1 starts after clicking the title");
         Check(gm.director.ActiveCount == 0, "No anomalies on Day 1");
         Check(shop.items.All(i => !i.gameObject.activeSelf), "All shop items hidden at start");
+        var curtain = Object.FindObjectsByType<Prop>(FindObjectsInactive.Include).First(p => p.name == "Shower Curtain");
+        curtain.Click();
+        Check(!curtain.gameObject.activeSelf && curtain.toggleTo.gameObject.activeSelf, "Clicking the shower curtain opens it");
+        curtain.toggleTo.Click();
+        Check(curtain.gameObject.activeSelf && !curtain.toggleTo.gameObject.activeSelf, "Clicking it again closes it");
         yield return new WaitForSecondsRealtime(0.8f);
         yield return Shot("02_day1_bedroom");
 

@@ -17,8 +17,8 @@ Tint (red) only unlocks from Day 4, even where listed.
 | Balcony | Street Lamp R | from the start |  | Tilt, Shift, Grow, Shrink |
 | Bathroom | Bath Mat | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Bathroom | Bottles | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
-| Bathroom | Curtain Fold | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Bathroom | Red Bottle | from the start |  | Tilt, Shift, Grow, Shrink |
+| Bathroom | Shower Curtain (Open) | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Bathroom | Shower Curtain | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Bathroom | Shower Pipe | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Bathroom | Small Bottle | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
