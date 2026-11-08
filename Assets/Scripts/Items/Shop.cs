@@ -29,7 +29,17 @@ public class Shop : MonoBehaviour
 
     public bool IsOpen => window != null && window.activeSelf;
     public bool AllOwned => items.All(i => i == null || i.Owned);
-    public int PageCount => Mathf.Max(1, Mathf.CeilToInt(items.Length / (float)cards.Length));
+    public int PageCount => Mathf.Max(1, Mathf.CeilToInt(stock.Count / (float)cards.Length));
+
+    [Tooltip("Price printed on each card slot of the BuyMe page art, left to right.")]
+    public int[] slotPrices = { 1, 2, 4, 2 };
+
+    readonly List<ShopItem> stock = new List<ShopItem>();
+
+    /// Opened at least once today (from the computer or the flyer).
+    public bool OpenedToday { get; private set; }
+    /// Anything left to buy right now?
+    public bool HasStock => stock.Exists(i => !i.Owned);
 
     int page;
     int boxesShown;
@@ -55,11 +65,21 @@ public class Shop : MonoBehaviour
         boxesShown = 0;
         foreach (var b in deliveryBoxes) if (b != null) b.SetActive(false);
         pendingReveal.Clear();
+        Restock();
+    }
+
+    /// Each morning: list only what isn't owned yet. Items bought today stay listed as OWNED until then.
+    public void Restock()
+    {
+        stock.Clear();
+        OpenedToday = false;
+        foreach (var item in items) if (item != null && !item.Owned) stock.Add(item);
     }
 
     public void Open()
     {
         if (IsOpen) return;
+        OpenedToday = true;
         page = 0;
         Refresh();
         window.SetActive(true);
@@ -86,7 +106,7 @@ public class Shop : MonoBehaviour
         for (int i = 0; i < cards.Length; i++)
         {
             int index = page * cards.Length + i;
-            cards[i].Bind(index < items.Length ? items[index] : null);
+            cards[i].Bind(index < stock.Count ? stock[index] : null, slotPrices[i % slotPrices.Length]);
         }
         cartLabel.text = PlayerState.PurchasesToday > 0 ? $"({PlayerState.PurchasesToday})" : "";
         prevButton.interactable = nextButton.interactable = PageCount > 1;
@@ -102,7 +122,7 @@ public class Shop : MonoBehaviour
             Deny(card, "CART FULL");
             return;
         }
-        if (!PlayerState.TryBuy(item.id, item.price))
+        if (!PlayerState.TryBuy(item.id, card.Price))
         {
             Deny(card, "CAN'T AFFORD");
             return;

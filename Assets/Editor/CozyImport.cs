@@ -9,6 +9,7 @@ public static class CozyImport
     {
         "Assets/Art/Source/Props/PSD_Props_02.psd",
         "Assets/Art/Source/UI/PSD_DialogueBoxes.psd",
+        "Assets/Art/Source/Props/PSD_Flyer.psd",
     };
 
     [MenuItem("Cozy Horror/Reimport Layered PSDs")]

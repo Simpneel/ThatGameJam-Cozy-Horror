@@ -11,10 +11,12 @@ public class ShopCard : MonoBehaviour
     public CanvasGroup group;
 
     public ShopItem Item { get; private set; }
+    public int Price { get; private set; }
 
-    public void Bind(ShopItem item)
+    public void Bind(ShopItem item, int price)
     {
         Item = item;
+        Price = price;
         group.alpha = item != null ? 1f : 0f;
         group.blocksRaycasts = item != null;
         if (item == null) return;

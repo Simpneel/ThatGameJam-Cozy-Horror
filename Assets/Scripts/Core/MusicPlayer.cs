@@ -7,6 +7,8 @@ public class MusicPlayer : MonoBehaviour
 {
     public AudioClip[] dayTracks;
     [Range(0f, 1f)] public float volume = 0.5f;
+    [Tooltip("Pitch drop set by Atmosphere when anomalies pile up (0 = in tune).")]
+    public float detune;
 
     AudioSource source;
     int lastIndex = -1;
@@ -18,6 +20,8 @@ public class MusicPlayer : MonoBehaviour
         source.playOnAwake = false;
         source.volume = 0f;
     }
+
+    void Update() => source.pitch = Mathf.MoveTowards(source.pitch, 1f - detune, Time.unscaledDeltaTime * 0.1f);
 
     public void PlayDay(int day)
     {

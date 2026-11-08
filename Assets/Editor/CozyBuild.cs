@@ -36,6 +36,11 @@ public static class CozyBuild
             target = target,
             options = options,
         });
+        // Unity writes debug symbols to "<Name>_BackUpThisFolder_ButDontShipItWithYourGame" next to the exe. Not needed: remove it.
+        var outDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(path));
+        if (target != BuildTarget.WebGL)
+            foreach (var dir in System.IO.Directory.GetDirectories(outDir, "*_ButDontShipItWithYourGame"))
+                System.IO.Directory.Delete(dir, true);
         Debug.Log($"[Cozy] Build {target}: {report.summary.result}, {report.summary.totalSize / (1024 * 1024)} MB, {report.summary.totalErrors} errors -> {path}");
         if (Application.isBatchMode && report.summary.result != BuildResult.Succeeded) EditorApplication.Exit(1);
     }

@@ -137,7 +137,7 @@ public static class CozyInspect
             if (name == "Shop Window")
             {
                 var cards = shop.cards;
-                for (int i = 0; i < cards.Length; i++) cards[i].Bind(shop.items[i]);
+                for (int i = 0; i < cards.Length; i++) cards[i].Bind(shop.items[i], shop.slotPrices[i]);
                 canvas.transform.Find("Toast").gameObject.SetActive(true);
             }
             var rt = new RenderTexture(1920, 1080, 24);
@@ -150,6 +150,24 @@ public static class CozyInspect
             RenderCamera(cam, Path.Combine(OutDir, $"ui_{name.Replace(' ', '_')}.png"), 1920, 1080);
             cam.targetTexture = null;
         }
+    }
+
+    /// Renders the bedroom at full dusk with the bed glowing (the end-of-day look).
+    public static void NightShot()
+    {
+        Directory.CreateDirectory(OutDir);
+        EditorSceneManager.OpenScene("Assets/Scenes/Game.unity");
+        var atm = Object.FindAnyObjectByType<Atmosphere>();
+        atm.globalLight.intensity = atm.phaseBrightness[atm.phaseBrightness.Length - 1];
+        atm.globalLight.color = atm.phaseColor[atm.phaseColor.Length - 1];
+        var gc = atm.bedGlow.color; gc.a = atm.bedGlowAlpha; atm.bedGlow.color = gc;
+        var rc = Object.FindAnyObjectByType<RoomCamera>();
+        var cam = rc.GetComponent<Camera>();
+        var a = rc.rooms[0].area;
+        cam.rect = new Rect(0, 0, 1, 1);
+        cam.orthographicSize = a.height / 2f;
+        cam.transform.position = new Vector3(a.center.x, a.center.y, -10);
+        RenderCamera(cam, Path.Combine(OutDir, "night_bedroom.png"), 1600, Mathf.RoundToInt(1600 * a.height / a.width));
     }
 
     static void DumpGO(Transform t, int depth, StringBuilder sb)
@@ -166,7 +184,7 @@ public static class CozyInspect
     /// Renders every visible sprite in the open scene with a temporary camera that frames them all.
     public static void RenderAll(string file)
     {
-        var renderers = Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Where(r => r.enabled && r.gameObject.activeInHierarchy).ToArray();
+        var renderers = Object.FindObjectsByType<SpriteRenderer>().Where(r => r.enabled && r.gameObject.activeInHierarchy).ToArray();
         if (renderers.Length == 0) return;
         var b = renderers[0].bounds;
         foreach (var r in renderers) b.Encapsulate(r.bounds);

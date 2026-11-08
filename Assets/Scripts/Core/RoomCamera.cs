@@ -22,6 +22,10 @@ public class RoomCamera : MonoBehaviour
     [SerializeField] CanvasGroup fade;
     [SerializeField] float panTime = 0.45f;
     [SerializeField] float panMaxDistance = 25f;
+    [Header("Blackout (non-neighbouring rooms)")]
+    [SerializeField] float blackIn = 0.3f;
+    [SerializeField] float blackHold = 0.15f;
+    [SerializeField] float blackOut = 0.4f;
     [SerializeField] AudioClip moveSound;
 
     public int Current { get; private set; }
@@ -70,13 +74,15 @@ public class RoomCamera : MonoBehaviour
         Moving = true;
         Sfx.Play(moveSound, 0.35f);
         Rect from = rooms[Current].area, to = rooms[next].area;
-        bool pan = Vector2.Distance(from.center, to.center) <= panMaxDistance && Mathf.Approximately(from.width / from.height, to.width / to.height);
+        // Only pan between side-by-side rooms on the same floor; everything else cuts through black.
+        bool sameRow = Mathf.Abs(from.center.y - to.center.y) < 1f;
+        bool pan = sameRow && Vector2.Distance(from.center, to.center) <= panMaxDistance && Mathf.Approximately(from.width / from.height, to.width / to.height);
         if (pan)
         {
             float t = 0f;
             while (t < panTime)
             {
-                t += Time.unscaledDeltaTime;
+                t += Mathf.Min(Time.unscaledDeltaTime, 1f / 30f);
                 float k = Mathf.SmoothStep(0f, 1f, t / panTime);
                 Frame(new Rect(Vector2.Lerp(from.position, to.position, k), Vector2.Lerp(from.size, to.size, k)));
                 yield return null;
@@ -85,9 +91,15 @@ public class RoomCamera : MonoBehaviour
         else if (fade != null)
         {
             fade.blocksRaycasts = true;
-            yield return UIAnim.Fade(fade, 1f, 0.18f);
+            yield return UIAnim.Fade(fade, 1f, blackIn);
+            // Switch only once fully black, then hold so the new room has rendered (and any texture-upload hitch
+            // has happened) before anything is revealed.
+            fade.alpha = 1f;
             Frame(to);
-            yield return UIAnim.Fade(fade, 0f, 0.22f);
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(blackHold);
+            yield return UIAnim.Fade(fade, 0f, blackOut);
             fade.blocksRaycasts = false;
         }
         Current = next;

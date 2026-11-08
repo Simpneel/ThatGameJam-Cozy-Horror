@@ -16,7 +16,7 @@ public class PauseMenu : MonoBehaviour
         resumeButton.onClick.AddListener(Resume);
         creditsButton.onClick.AddListener(() => { panel.SetActive(false); creditsPanel.SetActive(true); });
         creditsCloseButton.onClick.AddListener(() => { creditsPanel.SetActive(false); panel.SetActive(true); });
-        quitButton.onClick.AddListener(Quit);
+        quitButton.onClick.AddListener(QuitGame);
         panel.SetActive(false);
         creditsPanel.SetActive(false);
     }
@@ -44,13 +44,14 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    void Quit()
+    /// Quits the game (in the editor: stops Play mode; on the web: back to the start screen).
+    public static void QuitGame()
     {
         Time.timeScale = 1f;
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #elif UNITY_WEBGL
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // browsers can't quit: back to title
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // browsers can't quit: back to the start screen
 #else
         Application.Quit();
 #endif

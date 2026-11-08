@@ -10,7 +10,7 @@ public static class UIAnim
         float from = g.alpha, t = 0f;
         while (t < duration)
         {
-            t += Time.unscaledDeltaTime;
+            t += Mathf.Min(Time.unscaledDeltaTime, 1f / 30f); // a hitch frame must not skip the animation
             g.alpha = Mathf.Lerp(from, to, Mathf.SmoothStep(0f, 1f, t / duration));
             yield return null;
         }
@@ -23,7 +23,7 @@ public static class UIAnim
         float time = 0f;
         while (time < duration)
         {
-            time += Time.unscaledDeltaTime;
+            time += Mathf.Min(Time.unscaledDeltaTime, 1f / 30f);
             float k = Mathf.Clamp01(time / duration) - 1f;
             float s = 1f + 2.70158f * k * k * k + 1.70158f * k * k;
             t.localScale = Vector3.one * Mathf.LerpUnclamped(from, 1f, s);
@@ -38,7 +38,7 @@ public static class UIAnim
         float time = 0f;
         while (time < duration)
         {
-            time += Time.unscaledDeltaTime;
+            time += Mathf.Min(Time.unscaledDeltaTime, 1f / 30f);
             float k = 1f - time / duration;
             t.anchoredPosition = origin + new Vector2(Mathf.Sin(time * 70f) * strength * k, 0f);
             yield return null;
@@ -51,7 +51,7 @@ public static class UIAnim
         float time = 0f;
         while (time < duration)
         {
-            time += Time.unscaledDeltaTime;
+            time += Mathf.Min(Time.unscaledDeltaTime, 1f / 30f);
             float k = Mathf.Clamp01(time / duration);
             k = 1f - (1f - k) * (1f - k) * (1f - k);
             t.anchoredPosition = new Vector2(t.anchoredPosition.x, Mathf.Lerp(fromY, toY, k));

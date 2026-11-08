@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public enum AnomalyKind { None, SpriteSwap, Tilt, UpsideDown, Shift, Grow, Shrink, Tint }
+public enum AnomalyKind { None, SpriteSwap, Tilt, Shift, Grow, Shrink, Tint }
 
 /// Anything in the room the player can click (Unreal: an Actor with an OnClicked event).
 /// Handles hover feedback, the click wiggle + sound, and being an anomaly.
@@ -15,21 +15,26 @@ public class Prop : MonoBehaviour
 
     [Header("Anomaly")]
     public bool canBeAnomalous = true;
-    [Tooltip("Hand-drawn 'wrong' version. If empty, a procedural anomaly (tilt, shift, resize, tint) is used instead.")]
+    [Tooltip("Hand-drawn 'wrong' version. Used 90% of the time when set; otherwise one of allowedKinds.")]
     public Sprite anomalySprite;
     [Tooltip("Scale applied while the anomaly sprite is shown (for anomaly art drawn at a different size).")]
     public float anomalySpriteScale = 1f;
+    [Tooltip("Procedural anomalies that are clearly visible on this object. Filled in by the scene builder from the sprite's size, brightness and symmetry.")]
+    public AnomalyKind[] allowedKinds = new AnomalyKind[0];
+
+    /// Can the director turn this into an anomaly at all?
+    public bool CanBecomeAnomaly => canBeAnomalous && (anomalySprite != null || (allowedKinds != null && allowedKinds.Length > 0));
+
+    /// One shared "you fixed it" sound, set by the GameManager.
+    public static AudioClip FixedSound;
 
     public AnomalyKind Anomaly { get; private set; }
     public bool IsAnomalous => Anomaly != AnomalyKind.None;
 
     /// Fired on a normal (non-anomaly) click. Bed and Computer listen to this.
     public event Action<Prop> Clicked;
-    /// Fired when any anomaly is fixed.
-    public static event Action<Prop> AnomalyFixed;
-
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    static void ResetStatics() { AnomalyFixed = null; }
+    static void ResetStatics() { FixedSound = null; }
 
     SpriteRenderer sr;
     Sprite normalSprite;
@@ -73,9 +78,9 @@ public class Prop : MonoBehaviour
         if (IsAnomalous)
         {
             Resolve();
-            Sfx.Play(clickSound, volume, 0.75f);
+            Sfx.Play(FixedSound, 0.8f, UnityEngine.Random.Range(1.1f, 1.2f));
+            Sfx.Play(clickSound, volume * 0.6f, 0.75f);
             PlayerState.EarnPoint();
-            AnomalyFixed?.Invoke(this);
             Pop(1.3f);
             return;
         }
@@ -88,16 +93,21 @@ public class Prop : MonoBehaviour
     public void Pop(float from = 0f) { popT = 0f; popFrom = from; }
 
     /// Picks a fitting anomaly for this prop. Returns false if it can't become one.
-    public bool TriggerRandomAnomaly()
+    /// intensity 0..1 grows over the days: early anomalies are mild, the red tint only unlocks at 0.5.
+    public bool TriggerRandomAnomaly(float intensity = 0.5f)
     {
         Init();
-        if (IsAnomalous || !canBeAnomalous) return false;
-        if (anomalySprite != null && UnityEngine.Random.value < 0.75f) return Trigger(AnomalyKind.SpriteSwap);
-        var options = new[] { AnomalyKind.Tilt, AnomalyKind.Tilt, AnomalyKind.Shift, AnomalyKind.Grow, AnomalyKind.Shrink, AnomalyKind.Tint, AnomalyKind.UpsideDown };
-        return Trigger(options[UnityEngine.Random.Range(0, options.Length)]);
+        if (IsAnomalous || !CanBecomeAnomaly) return false;
+        var kinds = new System.Collections.Generic.List<AnomalyKind>(allowedKinds ?? new AnomalyKind[0]);
+        if (intensity < BoldFrom) kinds.RemoveAll(k => k == AnomalyKind.Tint);
+        if (kinds.Count == 0 && allowedKinds != null) kinds.AddRange(allowedKinds); // nothing mild fits: allow anything
+        if (anomalySprite != null && (kinds.Count == 0 || UnityEngine.Random.value < 0.9f)) return Trigger(AnomalyKind.SpriteSwap, intensity);
+        return kinds.Count > 0 && Trigger(kinds[UnityEngine.Random.Range(0, kinds.Count)], intensity);
     }
 
-    public bool Trigger(AnomalyKind kind)
+    const float BoldFrom = 0.5f;
+
+    public bool Trigger(AnomalyKind kind, float intensity = 0.5f)
     {
         Init();
         if (IsAnomalous || kind == AnomalyKind.None) return false;
@@ -110,14 +120,14 @@ public class Prop : MonoBehaviour
                 sr.sprite = anomalySprite;
                 aScale = anomalySpriteScale;
                 break;
-            case AnomalyKind.Tilt: aRot = sign * UnityEngine.Random.Range(9f, 16f); break;
-            case AnomalyKind.UpsideDown: aRot = 180f; break;
-            case AnomalyKind.Shift: aPos = new Vector3(sign * Mathf.Clamp(size * 0.18f, 0.25f, 0.8f), 0f, 0f); break;
-            case AnomalyKind.Grow: aScale = 1.22f; break;
-            case AnomalyKind.Shrink: aScale = 0.78f; break;
+            case AnomalyKind.Tilt: aRot = sign * UnityEngine.Random.Range(7f, 10f) * Mathf.Lerp(1f, 2f, intensity); break; // 7-10° early, up to 14-20°
+            case AnomalyKind.Shift: aPos = new Vector3(sign * Mathf.Clamp(size * Mathf.Lerp(0.13f, 0.25f, intensity), 0.25f, 1f), 0f, 0f); break;
+            case AnomalyKind.Grow: aScale = Mathf.Lerp(1.15f, 1.3f, intensity); break;
+            case AnomalyKind.Shrink: aScale = Mathf.Lerp(0.85f, 0.7f, intensity); break;
             case AnomalyKind.Tint: sr.color = new Color(1f, 0.45f, 0.45f, normalColor.a); break;
         }
         Anomaly = kind;
+        poseDirty = true;
         return true;
     }
 
@@ -130,10 +140,19 @@ public class Prop : MonoBehaviour
         aRot = 0f;
         aScale = 1f;
         Anomaly = AnomalyKind.None;
+        poseDirty = true;
     }
+
+    // True when the anomaly pose changed and must be written once even if nothing is animating.
+    bool poseDirty = true;
 
     void LateUpdate()
     {
+        // Idle props don't touch their transform: every write would force a re-sync of the click collider.
+        bool animating = hover != hoverTarget || wiggleT >= 0f || popT >= 0f;
+        if (!animating && !poseDirty) return;
+        poseDirty = false;
+
         float dt = Time.unscaledDeltaTime;
         hover = Mathf.MoveTowards(hover, hoverTarget, dt * 8f);
         float h = hover * hover * (3f - 2f * hover);

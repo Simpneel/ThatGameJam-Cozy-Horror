@@ -6,8 +6,6 @@ public class ShopItem : MonoBehaviour
 {
     public string id;
     public string displayName;
-    [Tooltip("Hidden points. Must match the price printed on the shop card slot it appears in.")]
-    public int price = 1;
     [Tooltip("Picture shown on the shop card. Defaults to the item's own sprite.")]
     public Sprite icon;
 

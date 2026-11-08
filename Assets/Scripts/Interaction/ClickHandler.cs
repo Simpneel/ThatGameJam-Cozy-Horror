@@ -13,8 +13,7 @@ public class ClickHandler : MonoBehaviour
     void Awake()
     {
         if (cam == null) cam = Camera.main;
-        filter = new ContactFilter2D { useTriggers = true };
-        filter.NoFilter();
+        filter = ContactFilter2D.noFilter;
     }
 
     void Update()
@@ -31,8 +30,15 @@ public class ClickHandler : MonoBehaviour
             if (hovered != null) hovered.Hovered = true;
         }
 
-        if (target != null && GameInput.ClickedThisFrame) target.Click();
+        // Only accept the click if the room was already clickable at the end of last frame.
+        // Otherwise the click that closes a menu (shop ✕, flyer X, "No", "Resume") would fall through onto the room.
+        if (target != null && interactableLastFrame && GameInput.ClickedThisFrame) target.Click();
     }
+
+    bool interactableLastFrame;
+
+    // LateUpdate runs after the UI has handled this frame's clicks, so this reflects the state the next frame starts in.
+    void LateUpdate() => interactableLastFrame = GameManager.Instance == null || GameManager.Instance.WorldInputEnabled;
 
     Prop PropUnderPointer()
     {

@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     public int pointsToArmWinStreak = 5;
     public int winStreakDays = 3;
     public int bedroomIndex = 0;
+    [Tooltip("Seconds between computer pings when you have points and haven't opened the shop today (Day 2+).")]
+    public Vector2 shopReminderGap = new Vector2(25f, 40f);
 
     [Header("Systems")]
     public Screens screens;
@@ -24,14 +26,19 @@ public class GameManager : MonoBehaviour
     public MusicPlayer music;
     public ConfirmDialog bedDialog;
     public PauseMenu pause;
+    public Atmosphere atmosphere;
+    public MainMenu mainMenu;
 
     [Header("Interactive props")]
     public Prop[] bedProps;       // clicking any of these asks "Go to bed?"
     public Prop[] computerProps;  // clicking any of these opens the shop
 
+    [Header("Feedback")]
+    [Tooltip("Played whenever any anomaly is fixed.")]
+    public AudioClip anomalyFixedSound;
+
     enum Phase { Title, Playing, Busy, Ended }
     Phase phase = Phase.Title;
-    bool shopVisitedToday;
 
     /// True when clicks should reach the room (no menus, no transitions).
     public bool WorldInputEnabled =>
@@ -39,10 +46,14 @@ public class GameManager : MonoBehaviour
 
     public bool CanPause => phase == Phase.Playing;
 
+    /// Time of day advances during play and menus (shopping costs daylight), but not while paused or between rooms.
+    public bool ClockRunning => phase == Phase.Playing && !pause.IsPaused && !rooms.Moving;
+
     void Awake()
     {
         Instance = this;
         Time.timeScale = 1f;
+        Prop.FixedSound = anomalyFixedSound;
     }
 
     void OnDestroy() { if (Instance == this) Instance = null; }
@@ -57,7 +68,15 @@ public class GameManager : MonoBehaviour
         director.ResetAll();
         rooms.JumpTo(bedroomIndex);
 
-        screens.ShowPage(screens.titleScreen, () => StartCoroutine(BeginRun()));
+        // Start screen → Play → "Welcome home" card → Day 1.  Credits returns to the start screen.
+        mainMenu.PlayPressed += () =>
+        {
+            if (phase != Phase.Title) return;
+            mainMenu.Hide();
+            screens.ShowPage(screens.titleScreen, () => StartCoroutine(BeginRun()));
+        };
+        mainMenu.CreditsPressed += () => screens.ShowPage(screens.creditsScreen, () => screens.HidePage(screens.creditsScreen));
+        mainMenu.Show();
         StartCoroutine(screens.FadeFromBlack(0.8f));
     }
 
@@ -73,33 +92,43 @@ public class GameManager : MonoBehaviour
     {
         PlayerState.StartNextDay();
         int day = PlayerState.Day;
-        shopVisitedToday = false;
         rooms.JumpTo(bedroomIndex);
+        shop.Restock();
         director.OnDayStart(day);
         music.PlayDay(day);
+        atmosphere.StartDay();
         yield return screens.FadeFromBlack(0.9f);
         phase = Phase.Playing;
         flyer.OnDayStart(day);
         StartCoroutine(screens.ShowDayBanner(day));
-        if (day == 1) StartCoroutine(NudgeComputer());
+        StartCoroutine(day == 1 ? NudgeComputer() : ShopReminders(day));
     }
 
     /// Day 1 tutorial hint: the computer pings and wiggles until the player opens the shop.
     IEnumerator NudgeComputer()
     {
         yield return new WaitForSeconds(4f);
-        while (!shopVisitedToday && PlayerState.Day == 1 && phase == Phase.Playing)
+        while (!shop.OpenedToday && PlayerState.Day == 1 && phase == Phase.Playing)
         {
             foreach (var p in computerProps) if (p != null && p.gameObject.activeInHierarchy) p.Wiggle(0.6f);
             yield return new WaitForSeconds(3.5f);
         }
     }
 
-    void OpenShop()
+    /// From Day 2: if you have points to spend and haven't looked at the shop today, the computer pings now and then.
+    IEnumerator ShopReminders(int day)
     {
-        shopVisitedToday = true;
-        shop.Open();
+        while (PlayerState.Day == day && !shop.OpenedToday)
+        {
+            yield return new WaitForSeconds(Random.Range(shopReminderGap.x, shopReminderGap.y));
+            if (phase != Phase.Playing || PlayerState.Day != day || shop.OpenedToday) yield break;
+            if (!WorldInputEnabled || PlayerState.Points < 1 || !shop.HasStock) continue;
+            foreach (var p in computerProps)
+                if (p != null && p.gameObject.activeInHierarchy) { p.Wiggle(0.6f); Sfx.Play(p.clickSound, 0.5f); }
+        }
     }
+
+    void OpenShop() => shop.Open();
 
     void AskBed()
     {
@@ -112,6 +141,7 @@ public class GameManager : MonoBehaviour
         phase = Phase.Busy;
         flyer.Cancel();
         director.StopMidDay();
+        atmosphere.Stop();
         music.FadeOut(1.2f);
         PlayerState.EndDay(pointsToArmWinStreak);
 

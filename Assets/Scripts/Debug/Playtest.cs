@@ -53,6 +53,11 @@ public class Playtest : MonoBehaviour
         var gm = GameManager.Instance;
         var shop = gm.shop;
         yield return new WaitForSecondsRealtime(1.2f);
+        Check(gm.mainMenu.IsOpen, "Start screen shows first");
+        yield return Shot("00_main_menu");
+        gm.mainMenu.GetComponentsInChildren<Button>(true).First(b => b.name == "Play").onClick.Invoke();
+        yield return new WaitForSecondsRealtime(0.8f);
+        Check(!gm.mainMenu.IsOpen && gm.screens.titleScreen.gameObject.activeSelf, "Play leads to the Welcome card");
         yield return Shot("01_title");
 
         gm.screens.titleScreen.onClick.Invoke();
@@ -62,6 +67,24 @@ public class Playtest : MonoBehaviour
         Check(shop.items.All(i => !i.gameObject.activeSelf), "All shop items hidden at start");
         yield return new WaitForSecondsRealtime(0.8f);
         yield return Shot("02_day1_bedroom");
+
+        // The guaranteed Day 1 flyer should arrive on its own within ~15 s of free play
+        float waited = 0f;
+        while (!gm.flyer.IsOpen && waited < 20f) { waited += Time.unscaledDeltaTime; yield return null; }
+        Check(gm.flyer.IsOpen && !gm.flyer.IsAnomalous, $"Day 1 flyer appears by itself (after {waited:0.0}s, normal version)");
+        gm.flyer.Hide();
+
+        // Day cycle: fast-forward the day and measure both the light and the actual screen brightness
+        yield return MeasureScreen();
+        float lumBefore = lastLum, lightBefore = gm.atmosphere.globalLight.intensity;
+        gm.atmosphere.dayLength = 4f;
+        yield return new WaitForSecondsRealtime(8f);
+        yield return MeasureScreen();
+        log.Add($"  dusk: progress {gm.atmosphere.DayProgress:0.00} light {lightBefore:0.00}->{gm.atmosphere.globalLight.intensity:0.00} screen {lumBefore:0.000}->{lastLum:0.000} playing {gm.WorldInputEnabled}");
+        Check(gm.atmosphere.DayProgress >= 0.99f && gm.atmosphere.globalLight.intensity < 0.6f, "Day clock runs and dims the global light");
+        Check(lastLum < lumBefore * 0.8f, "Dusk is visibly darker on screen");
+        yield return Shot("02b_dusk");
+        gm.atmosphere.dayLength = 150f;
 
         // Shop
         gm.computerProps[0].Click();
@@ -99,23 +122,28 @@ public class Playtest : MonoBehaviour
         gm.pause.Resume();
 
         // Rooms
+        bool labelOk = true;
         for (int i = 0; i < gm.rooms.rooms.Length; i++)
         {
             gm.rooms.Step(+1);
             yield return WaitFor(() => !gm.rooms.Moving, 3f);
             yield return new WaitForSecondsRealtime(0.1f);
             yield return Shot($"09_room_{gm.rooms.Current}");
+            var roomLabel = FindAnyObjectByType<RoomLabel>();
+            if (roomLabel.GetComponentInChildren<Text>().text != gm.rooms.rooms[gm.rooms.Current].name.ToUpperInvariant() || roomLabel.GetComponent<CanvasGroup>().alpha < 0.2f) labelOk = false;
         }
         Check(gm.rooms.Current == 0, "Arrows cycle through all rooms back to the bedroom");
+        Check(labelOk, "Room label shows the right name after every move");
 
         // Bed → Day 2
-        gm.bedProps[0].Click();
+        gm.bedProps.First(p => !p.canBeAnomalous).Click();
         yield return new WaitForSecondsRealtime(0.4f);
         Check(gm.bedDialog.IsOpen, "Clicking the bed asks 'Go to bed?'");
         yield return Shot("10_bed_dialog");
         ClickYes(gm);
         yield return WaitFor(() => PlayerState.Day == 2 && gm.WorldInputEnabled, 20f);
         Check(PlayerState.Day == 2, "Sleeping starts Day 2");
+        Check(gm.atmosphere.globalLight.intensity > 0.95f, "Brightness resets the next morning");
         int active = gm.director.ActiveCount;
         Check(active >= 2, $"Day 2 spawns anomalies ({active})");
         yield return Shot("11_day2_bedroom");
@@ -130,15 +158,35 @@ public class Playtest : MonoBehaviour
         FindObjectsByType<Prop>(FindObjectsInactive.Exclude).First(p => !p.IsAnomalous && !gm.bedProps.Contains(p) && !gm.computerProps.Contains(p)).Click();
         Check(PlayerState.Points == pts, "Clicking a normal object costs nothing");
 
+        // Next-day restock: the vase bought yesterday is gone from the shop
+        gm.shop.Open();
+        yield return new WaitForSecondsRealtime(0.3f);
+        Check(gm.shop.cards[0].Item != null && gm.shop.cards[0].Item != gm.shop.items[0] && !gm.shop.cards[0].Item.Owned, "Shop restocks with unowned items the next day");
+        yield return Shot("11b_shop_day2");
+        gm.shop.Close();
+
+        // Anomaly flyer
+        gm.flyer.anomalyChance = 1f;
+        gm.flyer.Show();
+        yield return new WaitForSecondsRealtime(0.7f);
+        Check(gm.flyer.IsAnomalous && gm.flyer.anomalyLayers[0].activeSelf && !gm.flyer.normalLayers[0].activeSelf, "Flyer can show its anomaly version");
+        yield return Shot("11c_flyer_anomaly");
+        int fp = PlayerState.PointsEarned;
+        gm.flyer.GetComponentInChildren<Button>().onClick.Invoke();
+        Check(PlayerState.PointsEarned == fp + 1 && !gm.shop.IsOpen && !gm.flyer.IsOpen, "Clicking the anomaly flyer earns a point and doesn't open the shop");
+        gm.flyer.anomalyChance = 0.3f;
+
         // Win: arm the streak, then three nights without buying
         PlayerState.EarnPoint(5);
         for (int night = 0; night < 3; night++)
         {
             int day = PlayerState.Day;
-            gm.bedProps[0].Click();
+            gm.bedProps.First(p => !p.canBeAnomalous).Click();
             yield return new WaitForSecondsRealtime(0.3f);
             ClickYes(gm);
             yield return WaitFor(() => (PlayerState.Day > day && gm.CanPause) || gm.screens.winScreen.gameObject.activeSelf, 20f);
+            log.Add($"  night {night}: day {PlayerState.Day} streak {PlayerState.NoPurchaseStreak} bought {PlayerState.PurchasesToday} earned {PlayerState.PointsEarned} playing {gm.CanPause}");
+            if (night == 0) Check(gm.director.ActiveCount >= 5, $"Day 3 has at least 5 anomalies ({gm.director.ActiveCount})");
         }
         yield return new WaitForSecondsRealtime(2.5f);
         Check(gm.screens.winScreen.gameObject.activeSelf, $"3 armed days without buying wins (streak {PlayerState.NoPurchaseStreak})");
@@ -155,6 +203,22 @@ public class Playtest : MonoBehaviour
     {
         var yes = gm.bedDialog.GetComponentsInChildren<Button>(true).OrderBy(b => b.transform.position.x).First();
         yes.onClick.Invoke();
+    }
+
+    float lastLum;
+
+    /// Average brightness of what's on screen (windowed runs only; batchmode can't capture the screen).
+    IEnumerator MeasureScreen()
+    {
+        yield return new WaitForEndOfFrame();
+        lastLum = -1f;
+        if (Application.isBatchMode) yield break;
+        var tex = ScreenCapture.CaptureScreenshotAsTexture();
+        float sum = 0f; int n = 0;
+        for (int y = 0; y < tex.height; y += 8)
+            for (int x = 0; x < tex.width; x += 8) { var c = tex.GetPixel(x, y); sum += c.r * 0.3f + c.g * 0.59f + c.b * 0.11f; n++; }
+        lastLum = sum / n;
+        Destroy(tex);
     }
 
     IEnumerator Shot(string name)

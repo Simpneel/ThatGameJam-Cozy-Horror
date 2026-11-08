@@ -35,25 +35,25 @@ public static class CozyBuilder
     class ItemSpec
     {
         public string id, display, psd, layer, anomalyLayer, sound, icon;
-        public int price, room, order = 40;
+        public int room, order = 40;
         public float nx, ny, height;
         public string attachLayer; // extra layer that moves with it (headphone stand)
     }
 
     const int Bedroom = 0, TVRoom = 1, Kitchen = 2, Hallway = 3, Bathroom = 4, Balcony = 5;
 
-    // Shop card slots print prices 1, 2, 4, 2 — so the catalogue order fixes each price.
+    // Shop catalogue order. Prices come from the card slot (1, 2, 4, 2), see Shop.slotPrices.
     static readonly ItemSpec[] ShopSpecs =
     {
-        new ItemSpec { id = "flower_vase", display = "Flower Vase", psd = Props1Psd, layer = "Flower Vase", anomalyLayer = "Flower Vase Anomaly", price = 1, room = Bedroom, nx = 0.071f, ny = 0.715f, height = 1.45f, sound = "Flowers" },
-        new ItemSpec { id = "radio", display = "Radio", psd = HousePsd, layer = "@radio", price = 2, sound = "Radio", icon = "Radio" },
-        new ItemSpec { id = "headphones", display = "Headphones", psd = Props1Psd, layer = "Headphones", attachLayer = "Headphone Stand", price = 4, room = TVRoom, nx = 0.905f, ny = 0.37f, height = 1.45f, sound = "Headphones" },
-        new ItemSpec { id = "board_game", display = "Board Game", psd = Props1Psd, layer = "Board Game", anomalyLayer = "Anomaly", price = 2, room = TVRoom, nx = 0.62f, ny = 0.035f, height = 0.75f, sound = "BoardGame" },
-        new ItemSpec { id = "plant", display = "Plant", psd = Props2Psd, layer = "plant", anomalyLayer = "anamoly plant", price = 1, room = Kitchen, nx = 0.957f, ny = 0.06f, height = 2.3f, sound = "Plant" },
-        new ItemSpec { id = "lamp", display = "Lamp", psd = Props2Psd, layer = "Lamp", anomalyLayer = "Lamp Anomaly", price = 2, room = Bedroom, nx = 0.165f, ny = 0.15f, height = 3.2f, sound = "Lamp" },
-        new ItemSpec { id = "alexa", display = "Smart Speaker", psd = HousePsd, layer = "@speaker", price = 4, sound = "Notification_03", icon = "Alexa" },
-        new ItemSpec { id = "weights", display = "Kettlebell", psd = Props2Psd, layer = "weights", anomalyLayer = "Anamoly weights", price = 2, room = Bedroom, nx = 0.57f, ny = 0.03f, height = 1.15f, sound = "RunningShoes" },
-        new ItemSpec { id = "goat_button", display = "Goat Button", psd = Props2Psd, layer = "Goat", anomalyLayer = "Anamoly Goat", price = 1, room = TVRoom, nx = 0.57f, ny = 0.37f, height = 0.8f, sound = "ScreamingGoatButton" },
+        new ItemSpec { id = "flower_vase", display = "Flower Vase", psd = Props1Psd, layer = "Flower Vase", anomalyLayer = "Flower Vase Anomaly", room = Bedroom, nx = 0.071f, ny = 0.715f, height = 1.45f, sound = "Flowers" },
+        new ItemSpec { id = "radio", display = "Radio", psd = HousePsd, layer = "@radio", sound = "Radio", icon = "Radio" },
+        new ItemSpec { id = "headphones", display = "Headphones", psd = Props1Psd, layer = "Headphones", attachLayer = "Headphone Stand", room = TVRoom, nx = 0.905f, ny = 0.37f, height = 1.45f, sound = "Headphones" },
+        new ItemSpec { id = "board_game", display = "Board Game", psd = Props1Psd, layer = "Board Game", anomalyLayer = "Anomaly", room = TVRoom, nx = 0.62f, ny = 0.035f, height = 0.75f, sound = "BoardGame" },
+        new ItemSpec { id = "plant", display = "Plant", psd = Props2Psd, layer = "plant", anomalyLayer = "anamoly plant", room = Kitchen, nx = 0.957f, ny = 0.06f, height = 2.3f, sound = "Plant" },
+        new ItemSpec { id = "lamp", display = "Lamp", psd = Props2Psd, layer = "Lamp", anomalyLayer = "Lamp Anomaly", room = Bedroom, nx = 0.165f, ny = 0.15f, height = 3.2f, sound = "Lamp" },
+        new ItemSpec { id = "alexa", display = "Smart Speaker", psd = HousePsd, layer = "@speaker", sound = "Notification_03", icon = "Alexa" },
+        new ItemSpec { id = "weights", display = "Kettlebell", psd = Props2Psd, layer = "weights", anomalyLayer = "Anamoly weights", room = Bedroom, nx = 0.57f, ny = 0.03f, height = 1.15f, sound = "RunningShoes" },
+        new ItemSpec { id = "goat_button", display = "Goat Button", psd = Props2Psd, layer = "Goat", anomalyLayer = "Anamoly Goat", room = TVRoom, nx = 0.57f, ny = 0.37f, height = 0.8f, sound = "ScreamingGoatButton" },
     };
 
     // Hallway package-rack slots for delivery boxes (one appears per purchase).
@@ -165,6 +165,7 @@ public static class CozyBuilder
 
         var leftArrow = ArrowButton(ui, "Arrow Left", -1);
         var rightArrow = ArrowButton(ui, "Arrow Right", +1);
+        BuildRoomLabel(ui, roomCam);
 
         var flyer = BuildFlyer(ui, shop);
         BuildShopWindow(ui, shop);
@@ -189,6 +190,39 @@ public static class CozyBuilder
         gm.bedProps = bedProps.ToArray();
         gm.computerProps = computerProps.ToArray();
         gm.bedroomIndex = Bedroom;
+        gm.anomalyFixedSound = UiSfx(4);
+        director.callFallbackSound = UiSfx(2);
+
+        // Atmosphere: creep vignette (behind all UI), dimming global light, glowing bed.
+        var bed = bedProps.First(p => !p.canBeAnomalous);
+        var bedBounds = bed.GetComponent<SpriteRenderer>().bounds;
+        var glow = new GameObject("Bed Glow").AddComponent<SpriteRenderer>();
+        glow.transform.SetParent(world);
+        glow.sprite = EnsureRadialSprite(GlowPng, false);
+        glow.sharedMaterial = Load<Material>("Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Unlit-Default.mat"); // ignores the dusk
+        glow.color = new Color(1f, 0.8f, 0.45f, 0f);
+        glow.sortingOrder = 7; // in front of the room walls (order 3-6), behind the furniture (8+)
+        // Size it around the bed but keep it inside the bedroom so it never bleeds into the kitchen or TV room.
+        var bedroomRect = rooms[Bedroom];
+        Vector2 gc = bedBounds.center;
+        float halfW = Mathf.Min(bedBounds.extents.x * 1.6f, bedroomRect.width / 2f);
+        float halfH = Mathf.Min(bedBounds.extents.y * 2.6f, bedroomRect.height / 2f);
+        // Keep full size; slide the centre inwards so the halo fits inside the room.
+        gc.x = Mathf.Clamp(gc.x, bedroomRect.xMin + halfW, bedroomRect.xMax - halfW);
+        gc.y = Mathf.Clamp(gc.y, bedroomRect.yMin + halfH, bedroomRect.yMax - halfH);
+        glow.transform.position = gc;
+        glow.transform.localScale = new Vector3(halfW * 2f / glow.sprite.bounds.size.x, halfH * 2f / glow.sprite.bounds.size.y, 1f);
+        var vignetteRt = Full(ui, "Creep Vignette");
+        vignetteRt.SetSiblingIndex(0);
+        var vignette = Img(vignetteRt, EnsureRadialSprite(VignettePng, true), new Color(0f, 0f, 0f, 0f), false);
+        vignetteRt.gameObject.AddComponent<Canvas>(); // own canvas: its per-frame fading doesn't re-batch the rest of the UI
+        var atm = game.AddComponent<Atmosphere>();
+        atm.director = director; atm.music = music; atm.vignette = vignette;
+        atm.globalLight = light; atm.bedGlow = glow; atm.bed = bed;
+        gm.atmosphere = atm;
+        gm.mainMenu = builtMenu;
+
+        AssignAnomalyKinds(roomCam.rooms);
 
         EditorSceneManager.SaveScene(scene, ScenePath);
         EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
@@ -327,7 +361,6 @@ public static class CozyBuilder
             var item = go.AddComponent<ShopItem>();
             item.id = spec.id;
             item.displayName = spec.display;
-            item.price = spec.price;
             item.icon = spec.icon != null ? PsdSprite(Props1Psd, spec.icon) : null;
             result.Add(item);
         }
@@ -465,7 +498,7 @@ public static class CozyBuilder
     static List<(Sprite sprite, RectTransform rt)> PsdToUI(string psd, Transform parent, params string[] skip)
     {
         var tmp = (GameObject)Object.Instantiate(Load<GameObject>(psd));
-        var bg = tmp.transform.Find("Background").GetComponent<SpriteRenderer>().bounds.center;
+        var bg = (tmp.transform.Find("Background") ?? tmp.transform.Find("Layer 1")).GetComponent<SpriteRenderer>().bounds.center;
         var map = new List<(Sprite sprite, RectTransform rt)>();
         foreach (var sr in tmp.GetComponentsInChildren<SpriteRenderer>().OrderBy(s => s.sortingOrder))
         {
@@ -499,12 +532,20 @@ public static class CozyBuilder
     {
         var layer = Full(ui, "Flyer");
         var card = Rect(layer, "Flyer Card", new Vector2(560, 20), new Vector2(466, 640));
-        Img(card, PsdSprite(FlyerPsd, null));
+        Img(card, null, new Color(1, 1, 1, 0)); // click target
+        var art = Rect(card, "Art", Vector2.zero, new Vector2(932, 1280));
+        art.localScale = Vector3.one * 0.5f;
+        var flyerLayers = PsdToUI(FlyerPsd, art);
+        GameObject[] Layers(params string[] names) => flyerLayers.Where(l => names.Contains(l.rt.name)).Select(l => l.rt.gameObject).ToArray();
         var flyerButton = card.gameObject.AddComponent<Button>();
         flyerButton.transition = Selectable.Transition.None;
         var close = TextButton(card, "Close", "X", new Vector2(215, 302), new Vector2(64, 64), 36);
         var popup = layer.gameObject.AddComponent<FlyerPopup>();
         Wire(popup, ("card", card), ("flyerButton", flyerButton), ("closeButton", close), ("shop", shop), ("popSound", UiSfx(2)));
+        popup.normalLayers = Layers("Inserted Image", "Inserted Image_1");
+        popup.anomalyLayers = Layers("Anomaly", "Anomaly_1");
+        popup.fixedSound = UiSfx(4);
+        if (popup.normalLayers.Length != 2 || popup.anomalyLayers.Length != 2) Debug.LogError("[Cozy] Flyer layers not found");
         return popup;
     }
 
@@ -600,6 +641,7 @@ public static class CozyBuilder
         s.video.renderMode = VideoRenderMode.RenderTexture;
         s.video.audioOutputMode = VideoAudioOutputMode.Direct;
 
+        builtMenu = BuildMainMenu(ui); // under the pages, so Credits and the Welcome card draw over it
         s.titleScreen = Page(ui, "Title Screen", "Assets/Art/Source/Screens/PSD_StartScreen.psd", "click anywhere to begin");
         s.winScreen = Page(ui, "Win Screen", "Assets/Art/Source/Screens/PSD_WinScreen.psd", "click to continue");
         s.loseScreen = Page(ui, "Lose Screen", "Assets/Art/Source/Screens/PSD_EndScreen.psd", "click to continue");
@@ -609,6 +651,50 @@ public static class CozyBuilder
         Img(fade, null, Color.black);
         s.fade = fade.gameObject.AddComponent<CanvasGroup>();
         return s;
+    }
+
+    const string MainMenuPsd = "Assets/Art/Source/Screens/PSD_MainMenu.psd";
+    static MainMenu builtMenu;
+
+    /// Start screen. Uses PSD_MainMenu.psd as the background once it exists; until then a plain placeholder with the title.
+    /// Buttons sit in the bottom-right quarter of the screen.
+    static MainMenu BuildMainMenu(Transform ui)
+    {
+        var layer = Full(ui, "Main Menu");
+        var panel = Full(layer, "Panel");
+        bool hasArt = File.Exists(MainMenuPsd);
+        Img(panel, hasArt ? PsdSprite(MainMenuPsd, null) : null, hasArt ? Color.white : new Color(0.1f, 0.09f, 0.11f));
+        if (!hasArt)
+        {
+            Label(panel, "Placeholder Title", "WHILE STOCKS LAST!", 110, new Vector2(-330, 240), new Vector2(1200, 160));
+            Label(panel, "Placeholder Team", "Shiiro Games", 36, new Vector2(-330, 130), new Vector2(800, 60), new Color(1f, 1f, 1f, 0.6f), FontStyle.Normal);
+        }
+        Button MenuButton(string name, float y)
+        {
+            var b = TextButton(panel, name, name.ToUpperInvariant(), Vector2.zero, new Vector2(420, 96), 44);
+            var rt = (RectTransform)b.transform;
+            rt.anchorMin = rt.anchorMax = new Vector2(1f, 0f);
+            rt.anchoredPosition = new Vector2(-330f, y);
+            return b;
+        }
+        var play = MenuButton("Play", 380f);
+        var credits = MenuButton("Credits", 265f);
+        var quit = MenuButton("Quit", 150f);
+        var menu = layer.gameObject.AddComponent<MainMenu>();
+        Wire(menu, ("panel", panel.gameObject), ("playButton", play), ("creditsButton", credits), ("quitButton", quit));
+        return menu;
+    }
+
+    /// Bottom-left room name that fades in for 3 s on every room change.
+    static void BuildRoomLabel(Transform ui, RoomCamera rooms)
+    {
+        var rt = Rect(ui, "Room Label", Vector2.zero, new Vector2(420, 80));
+        rt.anchorMin = rt.anchorMax = rt.pivot = Vector2.zero;
+        rt.anchoredPosition = new Vector2(40f, 40f);
+        Img(rt, null, Dark, false);
+        var text = Label(rt, "Label", "BEDROOM", 40, Vector2.zero, rt.sizeDelta);
+        var label = rt.gameObject.AddComponent<RoomLabel>();
+        Wire(label, ("rooms", rooms), ("label", text), ("group", rt.gameObject.AddComponent<CanvasGroup>()));
     }
 
     static Button Page(Transform ui, string name, string psd, string hint)
@@ -675,6 +761,95 @@ public static class CozyBuilder
         return s;
     }
 
+    // ------------------------------------------------------------------ anomaly visibility
+
+    // Thresholds for "would a player actually notice this change?" Sizes are world units (a room is ~20 wide).
+    const float MinTilt = 0.8f, MinShift = 0.6f, MinResize = 1.0f, MaxResize = 8f, MinTint = 0.6f;
+    const float MinTintChange = 0.15f;      // how much the red tint changes the sprite (black or red objects barely change)
+
+    /// Gives every Prop the procedural anomalies that will be clearly visible on it, and writes ANOMALIES.md.
+    static void AssignAnomalyKinds(RoomCamera.Room[] rooms)
+    {
+        var rows = new List<string>();
+        var debug = new List<string>();
+        foreach (var p in Object.FindObjectsByType<Prop>(FindObjectsInactive.Include))
+        {
+            var sr = p.GetComponent<SpriteRenderer>();
+            float size = Mathf.Max(sr.bounds.size.x, sr.bounds.size.y);
+            float tintChange = Measure(sr.sprite);
+            var kinds = new List<AnomalyKind>();
+            if (size >= MinTilt) kinds.Add(AnomalyKind.Tilt);
+            if (size >= MinShift) kinds.Add(AnomalyKind.Shift);
+            if (size >= MinResize && size <= MaxResize) { kinds.Add(AnomalyKind.Grow); kinds.Add(AnomalyKind.Shrink); }
+            if (size >= MinTint && tintChange >= MinTintChange) kinds.Add(AnomalyKind.Tint);
+            p.allowedKinds = kinds.ToArray();
+
+            var room = rooms.FirstOrDefault(r => r.area.Contains(sr.bounds.center))?.name ?? "?";
+            bool bought = p.GetComponent<ShopItem>() != null;
+            bool box = p.name.StartsWith("Delivery Box");
+            string drawn = p.anomalySprite != null ? "**yes**" : "";
+            string procedural = !p.canBeAnomalous ? "never (interactive)" : kinds.Count == 0 ? "none (too small)" : string.Join(", ", kinds);
+            string when = bought ? "after buying" : box ? "after a purchase" : "from the start";
+            rows.Add($"| {room} | {p.name} | {when} | {drawn} | {procedural} |");
+            debug.Add($"{room}/{p.name}: size {size:0.00} tintChange {tintChange:0.00} -> {string.Join(",", kinds)}");
+        }
+        rows.Sort();
+        var md = new List<string>
+        {
+            "# Anomaly list (generated by CozyBuilder — do not edit by hand)",
+            "",
+            "**Drawn** = has hand-drawn anomaly art (shown 90% of the time it's picked).",
+            "**Procedural** = the changes that are clearly visible on that object; one is picked at random.",
+            "Strength grows each day: Day 2 is mild (tilt 7–10°, resize ±15%, small shift), Day 6+ is strong (tilt 14–20°, resize ±30%).",
+            "Tint (red) only unlocks from Day 4, even where listed.",
+            "",
+            "| Room | Object | Can appear | Drawn | Procedural options |",
+            "|---|---|---|---|---|",
+        };
+        md.AddRange(rows);
+        File.WriteAllLines("ANOMALIES.md", md);
+        var outDir = System.Environment.GetEnvironmentVariable("COZY_OUT");
+        if (outDir != null) File.WriteAllLines(Path.Combine(outDir, "anomaly_metrics.txt"), debug);
+        readable.Clear();
+    }
+
+    static readonly Dictionary<Texture, Texture2D> readable = new Dictionary<Texture, Texture2D>();
+
+    /// PSD textures aren't CPU-readable, so copy them through a RenderTexture once.
+    static Texture2D Readable(Texture tex)
+    {
+        if (readable.TryGetValue(tex, out var r)) return r;
+        var rt = RenderTexture.GetTemporary(tex.width, tex.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+        Graphics.Blit(tex, rt);
+        var prev = RenderTexture.active;
+        RenderTexture.active = rt;
+        r = new Texture2D(tex.width, tex.height, TextureFormat.RGBA32, false);
+        r.ReadPixels(new UnityEngine.Rect(0, 0, tex.width, tex.height), 0, 0);
+        r.Apply();
+        RenderTexture.active = prev;
+        RenderTexture.ReleaseTemporary(rt);
+        readable[tex] = r;
+        return r;
+    }
+
+    /// How much the red anomaly tint (x1, x0.45, x0.45) changes the visible pixels' brightness.
+    static float Measure(Sprite s)
+    {
+        var tex = Readable(s.texture);
+        var rect = s.textureRect;
+        int x0 = (int)rect.x, y0 = (int)rect.y, w = (int)rect.width, h = (int)rect.height;
+        int step = Mathf.Max(1, Mathf.Max(w, h) / 64);
+        float lumSum = 0f, alphaSum = 0f;
+        for (int y = 0; y < h; y += step)
+            for (int x = 0; x < w; x += step)
+            {
+                Color c = tex.GetPixel(x0 + x, y0 + y);
+                lumSum += (0.59f * 0.55f * c.g + 0.11f * 0.55f * c.b) * c.a; // brightness lost to the tint
+                alphaSum += c.a;
+            }
+        return alphaSum > 0f ? lumSum / alphaSum : 0f;
+    }
+
     static AudioClip ItemSfx(string name) => Load<AudioClip>($"Assets/Audio/SFX/Items/SFX_{name}.wav");
     static AudioClip UiSfx(int n) => Load<AudioClip>($"Assets/Audio/SFX/UI/SFX_Notification_0{n}.wav");
 
@@ -689,6 +864,34 @@ public static class CozyBuilder
             p.objectReferenceValue = value;
         }
         so.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    const string VignettePng = "Assets/Art/Sprites/UI/SPR_UI_Vignette.png";
+    const string GlowPng = "Assets/Art/Sprites/UI/SPR_UI_Glow.png";
+
+    /// Radial alpha gradient, generated once. edges=true: clear centre, solid edges (vignette). false: solid centre, clear edges (glow).
+    static Sprite EnsureRadialSprite(string path, bool edges)
+    {
+        if (!File.Exists(path))
+        {
+            const int S = 256;
+            var tex = new Texture2D(S, S, TextureFormat.RGBA32, false);
+            for (int y = 0; y < S; y++)
+                for (int x = 0; x < S; x++)
+                {
+                    float dx = (x + 0.5f) / S * 2f - 1f, dy = (y + 0.5f) / S * 2f - 1f;
+                    float d = Mathf.Sqrt(dx * dx + dy * dy) / 1.4142f;
+                    float a = edges ? Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.35f, 1f, d)) : 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(d * 1.4142f));
+                    tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+                }
+            File.WriteAllBytes(path, tex.EncodeToPNG());
+            AssetDatabase.ImportAsset(path);
+            var imp = (TextureImporter)AssetImporter.GetAtPath(path);
+            imp.textureType = TextureImporterType.Sprite;
+            imp.alphaIsTransparency = true;
+            imp.SaveAndReimport();
+        }
+        return Load<Sprite>(path);
     }
 
     /// Generates the round dark arrow button sprite once.

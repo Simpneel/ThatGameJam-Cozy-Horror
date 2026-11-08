@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,10 +13,8 @@ public static class PlayerState
 
     static readonly HashSet<string> owned = new HashSet<string>();
 
-    public static event Action<string> OnItemOwned;
-
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    static void ResetStatics() { OnItemOwned = null; Reset(0); }
+    static void ResetStatics() => Reset(0);
 
     public static void Reset(int startingPoints)
     {
@@ -44,7 +41,6 @@ public static class PlayerState
         Points -= price;
         PurchasesToday++;
         owned.Add(id);
-        OnItemOwned?.Invoke(id);
         return true;
     }
 
