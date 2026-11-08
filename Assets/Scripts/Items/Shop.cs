@@ -37,8 +37,13 @@ public class Shop : MonoBehaviour
     public int priceHikeDay = 5;
     public int priceHikeMultiplier = 2;
     public string priceHikeMessage = "PRICE HIKE! EVERYTHING COSTS DOUBLE";
+    public int bigPriceHikeDay = 11;
+    public int bigPriceHikeMultiplier = 3;
+    public string bigPriceHikeMessage = "DOUBLE PRICE HIKE!! EVERYTHING COSTS TRIPLE";
 
-    int SlotPrice(int i) => slotPrices[i % slotPrices.Length] * (PlayerState.Day >= priceHikeDay ? priceHikeMultiplier : 1);
+    int PriceMultiplier => PlayerState.Day >= bigPriceHikeDay ? bigPriceHikeMultiplier : PlayerState.Day >= priceHikeDay ? priceHikeMultiplier : 1;
+
+    int SlotPrice(int i) => slotPrices[i % slotPrices.Length] * PriceMultiplier;
 
     readonly List<ShopItem> stock = new List<ShopItem>();
 
@@ -85,7 +90,7 @@ public class Shop : MonoBehaviour
     public void Open()
     {
         if (IsOpen) return;
-        if (!OpenedToday && PlayerState.Day >= priceHikeDay && toast != null) toast.Show(priceHikeMessage);
+        if (!OpenedToday && PlayerState.Day >= priceHikeDay && toast != null) toast.Show(PlayerState.Day >= bigPriceHikeDay ? bigPriceHikeMessage : priceHikeMessage);
         OpenedToday = true;
         page = 0;
         Refresh();

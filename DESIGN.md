@@ -63,7 +63,7 @@ The house starts partly empty; buying items on the computer fills it, and the th
 | Day length | 120 s, in 4 visible steps (Morning 100%, Afternoon 88% warm, Evening 68% orange, Night 40% blue), each easing in over 3 s. Clock runs in menus, stops for pause/room transitions. Bed halo from Evening, bed nudges at end | Atmosphere |
 
 **Shop catalogue.** Each morning the shop restocks with only the items you don't own, in this order.
-The card art prints prices 1/2/4/2, so the price belongs to the slot, not the item, and can change as stock shifts. **From Day 5 every price doubles** (2/4/8/4; the printed price stays the same, and a "PRICE HIKE!" notice shows the first time the shop opens each day):
+The card art prints prices 1/2/4/2, so the price belongs to the slot, not the item, and can change as stock shifts. **From Day 5 every price doubles** (2/4/8/4), **from Day 11 it triples** (3/6/12/6). The printed price stays the same; a "PRICE HIKE!" / "DOUBLE PRICE HIKE!!" notice shows the first time the shop opens each day:
 Page 1: Flower Vase 1, Radio 2, Headphones 4, Board Game 2.
 Page 2: Plant 1, Lamp 2, Smart Speaker 4, Kettlebell 2.
 Page 3: Goat Button 1. Total = 19 points.
