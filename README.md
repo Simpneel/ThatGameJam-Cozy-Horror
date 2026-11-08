@@ -28,4 +28,4 @@
 **The scene is generated.** `Game.unity` is built from the PSDs by **Cozy Horror ▸ Rebuild Game Scene** (`Assets/Editor/CozyBuilder.cs`).
 After changing art, run that menu item. Manual edits to the scene are lost on the next rebuild, so change placement in `CozyBuilder.cs` instead.
 
-**Start screen art:** save it as `Assets/Art/Source/Screens/PSD_MainMenu.psd` and rebuild the scene. Until then a placeholder is shown.
+**Screen art** lives in `Assets/Art/Source/Screens/`: save over a PSD there and run **Cozy Horror ▸ Rebuild Game Scene**.

@@ -120,21 +120,32 @@ public class Playtest : MonoBehaviour
         yield return null;
         Check(Time.timeScale == 0f && !gm.WorldInputEnabled, "Pause freezes time and blocks input");
         yield return Shot("08_pause");
+        var pauseButtons = gm.pause.GetComponentsInChildren<Button>(true);
+        pauseButtons.First(b => b.name == "What To Do").onClick.Invoke();
+        yield return null;
+        var whatPage = gm.pause.transform.Find("Pause What To Do").gameObject;
+        Check(whatPage.activeSelf && gm.pause.IsPaused, "Pause menu 'What to do?' opens the instructions page");
+        yield return Shot("08b_what_to_do");
+        whatPage.GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Check(!whatPage.activeSelf && gm.pause.transform.Find("Pause Panel").gameObject.activeSelf, "Clicking the instructions page returns to the pause menu");
         gm.pause.Resume();
 
         // Rooms
         bool labelOk = true;
         if (System.Environment.GetEnvironmentVariable("COZY_PROBE") != null) { yield return ProbeTransition(gm); Finish(); yield break; }
+        var visited = new List<int> { gm.rooms.Current };
         for (int i = 0; i < gm.rooms.rooms.Length; i++)
         {
             gm.rooms.Step(+1);
             yield return WaitFor(() => !gm.rooms.Moving, 3f);
+            visited.Add(gm.rooms.Current);
             yield return new WaitForSecondsRealtime(0.1f);
             yield return Shot($"09_room_{gm.rooms.Current}");
             var roomLabel = FindAnyObjectByType<RoomLabel>();
             if (roomLabel.GetComponentInChildren<Text>().text != gm.rooms.rooms[gm.rooms.Current].name.ToUpperInvariant() || roomLabel.GetComponent<CanvasGroup>().alpha < 0.2f) labelOk = false;
         }
-        Check(gm.rooms.Current == 0, "Arrows cycle through all rooms back to the bedroom");
+        Check(gm.rooms.Current == 0, $"Arrows cycle through all rooms back to the bedroom ({string.Join(">", visited)})");
         Check(labelOk, "Room label shows the right name after every move");
 
         // Bed → Day 2

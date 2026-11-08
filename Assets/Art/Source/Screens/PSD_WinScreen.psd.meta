@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ac831ba84cbbe1e419f78428be27ef5e
+guid: 7a345c6ee0dd4874ba7f19790e5dffef
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7943435302025799793
-    second: PSD_WinScreen_0
+      213: -6990256760934216685
+    second: End_Screen(1)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -115,7 +115,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PSD_WinScreen_0
+      name: End_Screen(1)_0
       rect:
         serializedVersion: 2
         x: 0
@@ -130,8 +130,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f87547ecdaf33c190800000000000000
-      internalID: -7943435302025799793
+      spriteID: 31c4ebb038e9dfe90800000000000000
+      internalID: -6990256760934216685
       vertices: []
       indices: 
       edges: []
@@ -150,7 +150,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PSD_WinScreen_0: -7943435302025799793
+      End_Screen(1)_0: -6990256760934216685
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

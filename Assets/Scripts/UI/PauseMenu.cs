@@ -2,29 +2,48 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// Esc / P: Resume, Credits, Quit. Freezes game time while open.
+/// Esc / P: Resume, What to do?, Credits, Quit. Freezes game time while open.
+/// "What to do?" and Credits open a full-screen page; clicking it (or Esc) returns to the menu.
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] GameObject panel;
     [SerializeField] GameObject creditsPanel;
-    [SerializeField] Button resumeButton, creditsButton, quitButton, creditsCloseButton;
+    [SerializeField] GameObject instructionsPanel;
+    [SerializeField] Button resumeButton, instructionsButton, creditsButton, quitButton, creditsCloseButton, instructionsCloseButton;
 
-    public bool IsPaused => panel.activeSelf || creditsPanel.activeSelf;
+    public bool IsPaused => panel.activeSelf || SubPageOpen;
+    bool SubPageOpen => creditsPanel.activeSelf || instructionsPanel.activeSelf;
 
     void Awake()
     {
         resumeButton.onClick.AddListener(Resume);
-        creditsButton.onClick.AddListener(() => { panel.SetActive(false); creditsPanel.SetActive(true); });
-        creditsCloseButton.onClick.AddListener(() => { creditsPanel.SetActive(false); panel.SetActive(true); });
+        instructionsButton.onClick.AddListener(() => OpenPage(instructionsPanel));
+        creditsButton.onClick.AddListener(() => OpenPage(creditsPanel));
+        instructionsCloseButton.onClick.AddListener(BackToMenu);
+        creditsCloseButton.onClick.AddListener(BackToMenu);
         quitButton.onClick.AddListener(QuitGame);
         panel.SetActive(false);
         creditsPanel.SetActive(false);
+        instructionsPanel.SetActive(false);
+    }
+
+    void OpenPage(GameObject page)
+    {
+        panel.SetActive(false);
+        page.SetActive(true);
+    }
+
+    void BackToMenu()
+    {
+        creditsPanel.SetActive(false);
+        instructionsPanel.SetActive(false);
+        panel.SetActive(true);
     }
 
     void Update()
     {
         if (!GameInput.PausePressed) return;
-        if (creditsPanel.activeSelf) { creditsPanel.SetActive(false); panel.SetActive(true); }
+        if (SubPageOpen) BackToMenu();
         else if (panel.activeSelf) Resume();
         else if (GameManager.Instance == null || GameManager.Instance.CanPause) Pause();
     }
@@ -41,6 +60,7 @@ public class PauseMenu : MonoBehaviour
     {
         panel.SetActive(false);
         creditsPanel.SetActive(false);
+        instructionsPanel.SetActive(false);
         Time.timeScale = 1f;
     }
 

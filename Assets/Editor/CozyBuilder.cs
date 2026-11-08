@@ -666,7 +666,7 @@ public static class CozyBuilder
         s.video.audioOutputMode = VideoAudioOutputMode.Direct;
 
         builtMenu = BuildMainMenu(ui); // under the pages, so Credits and the Welcome card draw over it
-        s.titleScreen = Page(ui, "Title Screen", "Assets/Art/Source/Screens/PSD_StartScreen.psd", "click anywhere to begin");
+        s.titleScreen = Page(ui, "Title Screen", InstructionsPsd, "click anywhere to begin"); // "What to do" card before Day 1
         s.winScreen = Page(ui, "Win Screen", "Assets/Art/Source/Screens/PSD_WinScreen.psd", "click to continue");
         s.loseScreen = Page(ui, "Lose Screen", "Assets/Art/Source/Screens/PSD_EndScreen.psd", "click to continue");
         s.creditsScreen = Page(ui, "Credits Screen", "Assets/Art/Source/Screens/PSD_Credits.psd", "click to play again");
@@ -678,6 +678,7 @@ public static class CozyBuilder
     }
 
     const string MainMenuPsd = "Assets/Art/Source/Screens/PSD_MainMenu.psd";
+    const string InstructionsPsd = "Assets/Art/Source/Screens/PSD_Instructions.psd";
     static MainMenu builtMenu;
 
     /// Start screen. Uses PSD_MainMenu.psd as the background once it exists; until then a plain placeholder with the title.
@@ -698,12 +699,12 @@ public static class CozyBuilder
             var b = TextButton(panel, name, name.ToUpperInvariant(), Vector2.zero, new Vector2(420, 96), 44);
             var rt = (RectTransform)b.transform;
             rt.anchorMin = rt.anchorMax = new Vector2(1f, 0f);
-            rt.anchoredPosition = new Vector2(-330f, y);
+            rt.anchoredPosition = new Vector2(-450f, y); // inside the title art's empty right-hand area
             return b;
         }
-        var play = MenuButton("Play", 380f);
-        var credits = MenuButton("Credits", 265f);
-        var quit = MenuButton("Quit", 150f);
+        var play = MenuButton("Play", 480f);
+        var credits = MenuButton("Credits", 365f);
+        var quit = MenuButton("Quit", 250f);
         var menu = layer.gameObject.AddComponent<MainMenu>();
         Wire(menu, ("panel", panel.gameObject), ("playButton", play), ("creditsButton", credits), ("quitButton", quit));
         return menu;
@@ -811,22 +812,31 @@ public static class CozyBuilder
         var layer = Full(ui, "Pause");
         var panel = Full(layer, "Pause Panel");
         Img(panel, null, new Color(0, 0, 0, 0.7f));
-        Label(panel, "Title", "PAUSED", 72, new Vector2(0, 230), new Vector2(600, 100));
-        var resume = TextButton(panel, "Resume", "RESUME", new Vector2(0, 70), new Vector2(420, 96));
-        var credits = TextButton(panel, "Credits", "CREDITS", new Vector2(0, -50), new Vector2(420, 96));
-        var quit = TextButton(panel, "Quit", "QUIT", new Vector2(0, -170), new Vector2(420, 96));
+        Label(panel, "Title", "PAUSED", 72, new Vector2(0, 270), new Vector2(600, 100));
+        var resume = TextButton(panel, "Resume", "RESUME", new Vector2(0, 120), new Vector2(420, 96));
+        var whatToDo = TextButton(panel, "What To Do", "WHAT TO DO?", new Vector2(0, 0), new Vector2(420, 96));
+        var credits = TextButton(panel, "Credits", "CREDITS", new Vector2(0, -120), new Vector2(420, 96));
+        var quit = TextButton(panel, "Quit", "QUIT", new Vector2(0, -240), new Vector2(420, 96));
 
-        var creditsPanel = Full(layer, "Pause Credits");
-        var cimg = Img(creditsPanel, PsdSprite("Assets/Art/Source/Screens/PSD_Credits.psd", null));
-        var close = creditsPanel.gameObject.AddComponent<Button>();
-        close.targetGraphic = cimg;
-        close.transition = Selectable.Transition.None;
-        var hint = Label(creditsPanel, "Hint", "click to go back", 30, new Vector2(0, 60), new Vector2(900, 50), new Color(1, 1, 1, 0.7f), FontStyle.Normal);
-        ((RectTransform)hint.transform).anchorMin = ((RectTransform)hint.transform).anchorMax = new Vector2(0.5f, 0f);
+        // Full-screen pages opened from the pause menu; clicking anywhere goes back.
+        (GameObject page, Button close) SubPage(string name, string psd)
+        {
+            var rt = Full(layer, name);
+            var img = Img(rt, PsdSprite(psd, null));
+            var b = rt.gameObject.AddComponent<Button>();
+            b.targetGraphic = img;
+            b.transition = Selectable.Transition.None;
+            var hint = Label(rt, "Hint", "click to go back", 30, new Vector2(0, 60), new Vector2(900, 50), new Color(1, 1, 1, 0.7f), FontStyle.Normal);
+            ((RectTransform)hint.transform).anchorMin = ((RectTransform)hint.transform).anchorMax = new Vector2(0.5f, 0f);
+            return (rt.gameObject, b);
+        }
+        var creditsPage = SubPage("Pause Credits", "Assets/Art/Source/Screens/PSD_Credits.psd");
+        var instructionsPage = SubPage("Pause What To Do", InstructionsPsd);
 
         var pause = layer.gameObject.AddComponent<PauseMenu>();
-        Wire(pause, ("panel", panel.gameObject), ("creditsPanel", creditsPanel.gameObject),
-            ("resumeButton", resume), ("creditsButton", credits), ("quitButton", quit), ("creditsCloseButton", close));
+        Wire(pause, ("panel", panel.gameObject), ("creditsPanel", creditsPage.page), ("instructionsPanel", instructionsPage.page),
+            ("resumeButton", resume), ("instructionsButton", whatToDo), ("creditsButton", credits), ("quitButton", quit),
+            ("creditsCloseButton", creditsPage.close), ("instructionsCloseButton", instructionsPage.close));
         return pause;
     }
 
