@@ -8,7 +8,7 @@ Tint (red) only unlocks from Day 4, even where listed.
 | Room | Object | Can appear | Drawn | Procedural options |
 |---|---|---|---|---|
 | Balcony | Balcony Plant | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
-| Balcony | Cup | from the start |  | Tilt, Shift, Grow, Shrink |
+| Balcony | Cup | from the start | **yes** | Tilt, Shift, Grow, Shrink |
 | Balcony | Delivery Truck | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Balcony | Hook Rail | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Balcony | Planter | from the start |  | Tilt, Shift, Grow, Shrink |

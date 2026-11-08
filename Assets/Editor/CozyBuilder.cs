@@ -83,7 +83,7 @@ public static class CozyBuilder
     {
         { "Layer 10", ("Delivery Truck", "Notification_04") }, { "Layer 7_1", ("Street Lamp L", null) }, { "Layer 7_2", ("Street Lamp R", null) },
         { "Layer 15", ("Balcony Plant", "Plant") }, { "Layer 10_1", ("Planter", "Plant") }, { "Layer 15_1", ("Scissors", null) },
-        { "Layer 13", ("Hook Rail", null) }, { "Layer 9_1", ("Cup", "Coffee") }, // normal pot (white lines); "Layer 9" is its anomaly
+        { "Layer 13", ("Hook Rail", null) }, { "Layer 9", ("Cup", "Coffee") },
     };
 
     // ------------------------------------------------------------------ entry
@@ -132,8 +132,9 @@ public static class CozyBuilder
         var computerProps = new List<Prop>();
         SetupHouse(house, props, bedProps, computerProps);
         SetupRoomPsd(bathroom, BathroomLayers, new[] { "Layer 3_1", "Layer 1", "Background" }, null, props);
-        SetupRoomPsd(balcony, BalconyLayers, new[] { "Layer 7", "Layer 6", "Layer 6_1", "Layer 2", "Layer 1", "Background" }, new[] { "Layer 9" }, props);
-        balcony.Find("Cup").GetComponent<Prop>().anomalySprite = balcony.Find("Layer 9").GetComponent<SpriteRenderer>().sprite;
+        SetupRoomPsd(balcony, BalconyLayers, new[] { "Layer 7", "Layer 6", "Layer 6_1", "Layer 2", "Layer 1", "Background" }, new[] { "Layer 9_1" }, props);
+        // Balcony cup: the lower "Layer 9_1" is its drawn anomaly version (white lines).
+        balcony.Find("Cup").GetComponent<Prop>().anomalySprite = balcony.Find("Layer 9_1").GetComponent<SpriteRenderer>().sprite;
 
         var itemsRoot = new GameObject("Shop Items").transform;
         itemsRoot.SetParent(world);
