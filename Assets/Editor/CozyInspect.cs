@@ -170,6 +170,41 @@ public static class CozyInspect
         RenderCamera(cam, Path.Combine(OutDir, "night_bedroom.png"), 1600, Mathf.RoundToInt(1600 * a.height / a.width));
     }
 
+    /// Checks every prefab instance in Game.unity for problems, before and after a fresh reimport of the room PSDs.
+    public static void PrefabCheck()
+    {
+        Directory.CreateDirectory(OutDir);
+        var log = new StringBuilder();
+        Application.LogCallback capture = (msg, stack, type) =>
+        {
+            if (type != LogType.Log) log.AppendLine($"[{type}] {msg}\n{stack}");
+        };
+        Application.logMessageReceived += capture;
+        for (int pass = 0; pass < 2; pass++)
+        {
+            if (pass == 1)
+            {
+                log.AppendLine("== after forced reimport ==");
+                foreach (var p in new[] { "Assets/Art/Source/Rooms/PSD_Balcony.psd", "Assets/Art/Source/Rooms/PSD_Bathroom.psd", "Assets/Art/Source/Rooms/PSD_House.psd" })
+                    AssetDatabase.ImportAsset(p, ImportAssetOptions.ForceUpdate);
+            }
+            var scene = EditorSceneManager.OpenScene("Assets/Scenes/Game.unity");
+            foreach (var root in scene.GetRootGameObjects())
+                foreach (var t in root.GetComponentsInChildren<Transform>(true))
+                {
+                    if (!PrefabUtility.IsOutermostPrefabInstanceRoot(t.gameObject)) continue;
+                    var go = t.gameObject;
+                    log.AppendLine($"{go.name}: status={PrefabUtility.GetPrefabInstanceStatus(go)} objectOverrides={PrefabUtility.GetObjectOverrides(go).Count} " +
+                        $"addedComponents={PrefabUtility.GetAddedComponents(go).Count} removedGOs={PrefabUtility.GetRemovedGameObjects(go).Count} " +
+                        $"source={AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(go))}");
+                    foreach (var c in go.GetComponentsInChildren<Component>(true))
+                        if (c == null) log.AppendLine("   missing script on a child of " + go.name);
+                }
+        }
+        Application.logMessageReceived -= capture;
+        File.WriteAllText(Path.Combine(OutDir, "prefabcheck.txt"), log.ToString());
+    }
+
     static void DumpGO(Transform t, int depth, StringBuilder sb)
     {
         var sr = t.GetComponent<SpriteRenderer>();

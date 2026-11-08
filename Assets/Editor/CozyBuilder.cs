@@ -224,6 +224,13 @@ public static class CozyBuilder
 
         AssignAnomalyKinds(roomCam.rooms);
 
+        // Unpack the room PSDs into plain objects. As prefab instances, every rename / hide / added component was an
+        // "override" pointing at a PSD layer; if an artist edits the PSD's layers those overrides break and Unity
+        // logs prefab errors. Sprites still reference the PSD, so redrawn art keeps updating; re-run this builder
+        // after adding, removing or renaming layers.
+        foreach (var psdRoot in new[] { house, bathroom, balcony })
+            PrefabUtility.UnpackPrefabInstance(psdRoot.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+
         EditorSceneManager.SaveScene(scene, ScenePath);
         EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
         Debug.Log($"[Cozy] Built {ScenePath}: {props.Count} props, {shopItems.Length} shop items, {boxes.Length} boxes, {rooms.Count} rooms");
