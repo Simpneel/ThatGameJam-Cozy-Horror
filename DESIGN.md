@@ -86,6 +86,6 @@ The bed and the monitor never become anomalies. Every fix plays the same "fixed"
 
 ## Screens
 
-Start screen (title art, Play / Credits / Quit bottom-right) → Instructions card ("Welcome to your new home!") → game → (pause: Resume / What to do? / Credits / Quit; "What to do?" shows the Instructions again) → Win screen or End screen → Credits → start screen.
+Start screen (title art, Play / Credits / Quit bottom-right) → yellow "Welcome home!" card (PSD_StartScreen) → game → (pause: Resume / What to do? / Credits / Quit; "What to do?" shows the Instructions page, PSD_Instructions) → Win screen or End screen → Credits → start screen.
 Each room's name shows bottom-left for 3 s when you arrive.
 There is no save file; every launch is a fresh run.

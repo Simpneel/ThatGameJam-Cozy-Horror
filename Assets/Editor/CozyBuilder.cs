@@ -706,7 +706,7 @@ public static class CozyBuilder
         s.video.audioOutputMode = VideoAudioOutputMode.Direct;
 
         builtMenu = BuildMainMenu(ui); // under the pages, so Credits and the Welcome card draw over it
-        s.titleScreen = Page(ui, "Title Screen", InstructionsPsd, "click anywhere to begin"); // "What to do" card before Day 1
+        s.titleScreen = Page(ui, "Title Screen", "Assets/Art/Source/Screens/PSD_StartScreen.psd", "click anywhere to begin"); // yellow "Welcome home" card before Day 1; instructions live behind pause > What to do?
         s.winScreen = Page(ui, "Win Screen", "Assets/Art/Source/Screens/PSD_WinScreen.psd", "click to continue");
         s.loseScreen = Page(ui, "Lose Screen", "Assets/Art/Source/Screens/PSD_EndScreen.psd", "click to continue");
         s.creditsScreen = Page(ui, "Credits Screen", "Assets/Art/Source/Screens/PSD_Credits.psd", "click to play again");
