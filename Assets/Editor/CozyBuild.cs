@@ -16,7 +16,12 @@ public static class CozyBuild
 
     // Needs the "Mac Build Support (Mono)" module in Unity Hub. Built on Windows it is unsigned: players right-click > Open the first time.
     [MenuItem("Cozy Horror/Build/Mac")]
-    public static void Mac() => Build(BuildTarget.StandaloneOSX, "Builds/Mac/WhileStocksLast.app", BuildOptions.None);
+    public static void Mac()
+    {
+        // Intel (x64) runs on every Mac: natively on Intel, via Rosetta on Apple Silicon. Unity's default here was ARM64-only, which Intel Macs refuse to open.
+        UnityEditor.OSXStandalone.UserBuildSettings.architecture = UnityEditor.Build.OSArchitecture.x64;
+        Build(BuildTarget.StandaloneOSX, "Builds/Mac/WhileStocksLast.app", BuildOptions.None);
+    }
 
     [MenuItem("Cozy Horror/Build/WebGL (itch.io)")]
     public static void WebGL()
