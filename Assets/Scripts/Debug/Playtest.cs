@@ -220,6 +220,7 @@ public class Playtest : MonoBehaviour
 
         // Win: arm the streak, then an idle night (must not count), then three nights without buying that each fix 2 anomalies
         PlayerState.EarnPoint(gm.pointsToArmWinStreak);
+        bool sawHike = false;
         for (int night = 0; night < 4; night++)
         {
             int day = PlayerState.Day;
@@ -228,6 +229,16 @@ public class Playtest : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.3f);
             ClickYes(gm);
             yield return WaitFor(() => (PlayerState.Day > day && gm.CanPause) || gm.screens.winScreen.gameObject.activeSelf, 20f);
+            if (PlayerState.Day >= shop.priceHikeDay && !sawHike && gm.CanPause)
+            {
+                sawHike = true;
+                shop.Open();
+                yield return new WaitForSecondsRealtime(0.6f);
+                Check(shop.cards.Any(c => c.priceSticker.activeSelf) && shop.toast.GetComponent<CanvasGroup>().alpha > 0.9f, $"Day {PlayerState.Day} shop shows the price hike (notice + NOW stickers)");
+                yield return Shot("11b_price_hike");
+                shop.Close();
+                yield return new WaitForSecondsRealtime(0.4f);
+            }
             log.Add($"  night {night}: day {PlayerState.Day} streak {PlayerState.NoPurchaseStreak} bought {PlayerState.PurchasesToday} earned {PlayerState.PointsEarned} playing {gm.CanPause}");
             if (night == 0) { Check(gm.director.ActiveCount >= 5, $"Day {PlayerState.Day} has at least 5 anomalies ({gm.director.ActiveCount})"); Check(PlayerState.NoPurchaseStreak == 0, "An idle day (no fixes) does not count toward the win streak"); }
         }

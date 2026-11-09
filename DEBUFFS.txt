@@ -34,7 +34,7 @@ ECONOMY
   "PRICE HIKE! EVERYTHING COSTS DOUBLE" when you open the shop.
 - DOUBLE PRICE HIKE (Day 11+): every price triples (-> 3/6/12/6).
   "DOUBLE PRICE HIKE!! EVERYTHING COSTS TRIPLE".
-  The card art keeps showing the old prices.
+  A red "NOW x!" sticker on each card covers the old printed price.
 - STALE ANOMALIES: unfound for 3 days -> fixing pays 0 points (dull thunk).
 - COOLDOWN: a fixed object can't go wrong again until the day after next,
   so you can't farm one object.

@@ -639,6 +639,12 @@ public static class CozyBuilder
             Img(owned, null, Dark, false);
             Label(owned, "Label", "OWNED", 32, Vector2.zero, owned.sizeDelta);
             card.ownedBadge = owned.gameObject;
+            var sticker = Rect(cardRt, "Price Sticker", new Vector2(bg.sizeDelta.x / 2 - 20, -bg.sizeDelta.y / 2 + 60), new Vector2(150, 54));
+            Img(sticker, null, new Color(0.78f, 0.1f, 0.12f), false);
+            sticker.localRotation = Quaternion.Euler(0, 0, 12f);
+            card.priceStickerLabel = Label(sticker, "Label", "NOW 4!", 30, Vector2.zero, sticker.sizeDelta);
+            card.priceSticker = sticker.gameObject;
+            sticker.gameObject.SetActive(false);
 
             var buy = buyBtns[i];
             buy.SetParent(cardRt, true);
@@ -661,6 +667,8 @@ public static class CozyBuilder
         var toastRt = Rect(ui, "Toast", new Vector2(0, -480), new Vector2(520, 90));
         Img(toastRt, null, Dark, false);
         var toastLabel = Label(toastRt, "Label", "CAN'T AFFORD", 44, Vector2.zero, toastRt.sizeDelta);
+        toastLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+        toastLabel.rectTransform.anchorMin = Vector2.zero; toastLabel.rectTransform.anchorMax = Vector2.one; toastLabel.rectTransform.sizeDelta = Vector2.zero;
         var toast = toastRt.gameObject.AddComponent<Toast>();
         Wire(toast, ("label", toastLabel), ("group", toastRt.gameObject.AddComponent<CanvasGroup>()));
         shop.toast = toast;

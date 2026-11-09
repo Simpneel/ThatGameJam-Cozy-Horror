@@ -10,6 +10,7 @@ public class Toast : MonoBehaviour
     [SerializeField] float holdTime = 1.1f;
 
     Coroutine running;
+    float minWidth, currentHold;
 
     void Awake()
     {
@@ -17,9 +18,16 @@ public class Toast : MonoBehaviour
         group.blocksRaycasts = false;
     }
 
-    public void Show(string message)
+    public void Show(string message) => Show(message, holdTime);
+
+    /// Widens the box to fit the text (never narrower than built) so long messages stay on one line.
+    public void Show(string message, float hold)
     {
         label.text = message;
+        var rt = (RectTransform)transform;
+        if (minWidth <= 0f) minWidth = rt.sizeDelta.x;
+        rt.sizeDelta = new Vector2(Mathf.Max(minWidth, label.preferredWidth + 70f), rt.sizeDelta.y);
+        currentHold = hold;
         if (running != null) StopCoroutine(running);
         running = StartCoroutine(Run());
     }
@@ -29,7 +37,7 @@ public class Toast : MonoBehaviour
         group.alpha = 1f;
         StartCoroutine(UIAnim.Shake((RectTransform)transform, 8f, 0.25f));
         float t = 0f;
-        while (t < holdTime) { t += Time.unscaledDeltaTime; yield return null; }
+        while (t < currentHold) { t += Time.unscaledDeltaTime; yield return null; }
         yield return UIAnim.Fade(group, 0f, 0.3f);
         running = null;
     }

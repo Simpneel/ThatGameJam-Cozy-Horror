@@ -90,7 +90,7 @@ public class Shop : MonoBehaviour
     public void Open()
     {
         if (IsOpen) return;
-        if (!OpenedToday && PlayerState.Day >= priceHikeDay && toast != null) toast.Show(PlayerState.Day >= bigPriceHikeDay ? bigPriceHikeMessage : priceHikeMessage);
+        if (!OpenedToday && PlayerState.Day >= priceHikeDay && toast != null) toast.Show(PlayerState.Day >= bigPriceHikeDay ? bigPriceHikeMessage : priceHikeMessage, 2.6f);
         OpenedToday = true;
         page = 0;
         Refresh();
@@ -118,7 +118,7 @@ public class Shop : MonoBehaviour
         for (int i = 0; i < cards.Length; i++)
         {
             int index = page * cards.Length + i;
-            cards[i].Bind(index < stock.Count ? stock[index] : null, SlotPrice(i));
+            cards[i].Bind(index < stock.Count ? stock[index] : null, SlotPrice(i), slotPrices[i % slotPrices.Length]);
         }
         cartLabel.text = PlayerState.PurchasesToday > 0 ? $"({PlayerState.PurchasesToday})" : "";
         prevButton.interactable = nextButton.interactable = PageCount > 1;
