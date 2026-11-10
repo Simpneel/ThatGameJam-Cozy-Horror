@@ -56,6 +56,8 @@ public class Prop : MonoBehaviour
     SpriteRenderer sr;
     Sprite normalSprite;
     Color normalColor;
+    SpriteRenderer[] parts; // merged pieces (e.g. tub rim) tint with the main sprite
+    Color[] partColors;
     Vector3 basePos, baseScale;
     float baseRot;
 
@@ -83,6 +85,9 @@ public class Prop : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         normalSprite = sr.sprite;
         normalColor = sr.color;
+        parts = GetComponentsInChildren<SpriteRenderer>(true);
+        partColors = new Color[parts.Length];
+        for (int i = 0; i < parts.Length; i++) partColors[i] = parts[i].color;
         basePos = transform.localPosition;
         baseRot = transform.localEulerAngles.z;
         baseScale = transform.localScale;
@@ -153,7 +158,7 @@ public class Prop : MonoBehaviour
             case AnomalyKind.Shift: aPos = new Vector3(sign * Mathf.Clamp(size * Mathf.Lerp(0.13f, 0.25f, intensity), 0.25f, 1f), 0f, 0f); break;
             case AnomalyKind.Grow: aScale = Mathf.Lerp(1.15f, 1.3f, intensity); break;
             case AnomalyKind.Shrink: aScale = Mathf.Lerp(0.85f, 0.7f, intensity); break;
-            case AnomalyKind.Tint: sr.color = new Color(1f, 0.45f, 0.45f, normalColor.a); break;
+            case AnomalyKind.Tint: for (int i = 0; i < parts.Length; i++) parts[i].color = new Color(partColors[i].r, partColors[i].g * 0.45f, partColors[i].b * 0.45f, partColors[i].a); break;
             case AnomalyKind.Vanish: SetVisible(false); break; // collider stays: click the empty spot to bring it back
         }
         spawnDay = PlayerState.Day;
@@ -172,7 +177,7 @@ public class Prop : MonoBehaviour
     {
         Init();
         sr.sprite = normalSprite;
-        sr.color = normalColor;
+        for (int i = 0; i < parts.Length; i++) parts[i].color = partColors[i];
         if (Anomaly == AnomalyKind.Vanish) SetVisible(true);
         aPos = Vector3.zero;
         aRot = 0f;

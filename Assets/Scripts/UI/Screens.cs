@@ -61,8 +61,8 @@ public class Screens : MonoBehaviour
 
     public IEnumerator FadeFromBlack(float duration = 0.8f)
     {
+        fade.blocksRaycasts = false; // clickable as soon as it starts fading in (the title ignored clicks before)
         yield return UIAnim.Fade(fade, 0f, duration);
-        fade.blocksRaycasts = false;
     }
 
     // ---------- day banner ----------
@@ -106,7 +106,12 @@ public class Screens : MonoBehaviour
             fade.alpha = 0f; // video now covers the screen
             double length = video.length > 0 ? video.length : 3.0;
             float t = 0f;
-            while (t < length + 0.2f && (video.isPlaying || t < 0.5f)) { t += Time.unscaledDeltaTime; yield return null; }
+            while (t < length + 0.2f && (video.isPlaying || t < 0.5f))
+            {
+                if (t > 0.4f && GameInput.ClickedThisFrame) break; // click to skip the bedtime video
+                t += Time.unscaledDeltaTime;
+                yield return null;
+            }
             fade.alpha = 1f;
             video.Stop();
             videoImage.gameObject.SetActive(false);

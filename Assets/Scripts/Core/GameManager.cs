@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 
     /// True when clicks should reach the room (no menus, no transitions).
     public bool WorldInputEnabled =>
-        phase == Phase.Playing && !shop.IsOpen && !bedDialog.IsOpen && !flyer.IsOpen && !pause.IsPaused && !rooms.Moving;
+        phase == Phase.Playing && !shop.IsOpen && !bedDialog.IsOpen && !pause.IsPaused && !rooms.Moving; // the flyer is a pop-up ad, not a menu: the room stays playable
 
     public bool CanPause => phase == Phase.Playing;
 

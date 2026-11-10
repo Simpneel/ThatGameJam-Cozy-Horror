@@ -82,7 +82,7 @@ public static class CozyBuilder
 
     static readonly Dictionary<string, (string name, string sound)> BalconyLayers = new Dictionary<string, (string, string)>
     {
-        { "Layer 10", ("Delivery Truck", "Notification_04") }, { "Layer 7_1", ("Street Lamp L", null) }, { "Layer 7_2", ("Street Lamp R", null) },
+        { "Layer 10", ("Delivery Truck", "Notification_01") }, { "Layer 7_1", ("Street Lamp L", null) }, { "Layer 7_2", ("Street Lamp R", null) },
         { "Layer 15", ("Balcony Plant", "Plant") }, { "Layer 10_1", ("Planter", "Plant") }, { "Layer 15_1", ("Scissors", null) },
         { "Layer 13", ("Hook Rail", null) }, { "Layer 9", ("Cup", "Coffee") },
     };
@@ -143,6 +143,7 @@ public static class CozyBuilder
         SetupRoomPsd(balcony, BalconyLayers, new[] { "Layer 7", "Layer 6", "Layer 6_1", "Layer 2", "Layer 1", "Background" }, new[] { "Layer 9_1" }, props);
         // Balcony cup: the lower "Layer 9_1" is its drawn anomaly version (white lines).
         balcony.Find("Cup").GetComponent<Prop>().anomalySprite = balcony.Find("Layer 9_1").GetComponent<SpriteRenderer>().sprite;
+        SimplifyProps(world, props, bedProps);
 
         var itemsRoot = new GameObject("Shop Items").transform;
         itemsRoot.SetParent(world);
@@ -163,6 +164,7 @@ public static class CozyBuilder
         musicSrc.playOnAwake = false;
 
         var roomCam = camGo.AddComponent<RoomCamera>();
+        FitRoomsToProps(rooms, world); // after shop items and boxes exist
         roomCam.rooms = new[] { "Bedroom", "TV Room", "Kitchen", "Hallway", "Bathroom", "Balcony" }
             .Select((n, i) => new RoomCamera.Room { name = n, area = rooms[i] }).ToArray();
         roomCam.startRoom = Bedroom;
@@ -181,6 +183,7 @@ public static class CozyBuilder
 
         var flyer = BuildFlyer(ui, shop);
         BuildShopWindow(ui, shop);
+        BuildHud(ui); // above the shop so points show while shopping
         var bedDialog = BuildBedDialog(ui);
         var screens = BuildScreens(ui);
         var pause = BuildPause(ui);
@@ -264,6 +267,76 @@ public static class CozyBuilder
     }
 
     // ------------------------------------------------------------------ world
+
+    /// Grows each room's view just enough that no clickable object (incl. buyable items) is cut off at the edge.
+    /// The rooms are inset 0.2 to hide neighbour slivers; objects drawn up to the wall edge (kitchen window, vents) were being clipped.
+    static void FitRoomsToProps(List<Rect> rooms, Transform world)
+    {
+        var all = world.GetComponentsInChildren<Prop>(true);
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            var area = rooms[i];
+            foreach (var p in all)
+            {
+                var b = p.GetComponent<SpriteRenderer>().bounds;
+                foreach (var sr in p.GetComponentsInChildren<SpriteRenderer>(true)) b.Encapsulate(sr.bounds);
+                if (!rooms[i].Contains(b.center)) continue;
+                area = UnityEngine.Rect.MinMaxRect(Mathf.Min(area.xMin, b.min.x), Mathf.Min(area.yMin, b.min.y), Mathf.Max(area.xMax, b.max.x), Mathf.Max(area.yMax, b.max.y));
+            }
+            if (area != rooms[i]) Debug.Log($"[Cozy] Room {i} widened to fit its objects: {rooms[i]} -> {area}");
+            rooms[i] = area;
+        }
+    }
+
+    /// Pieces that belong to one object: the parts become children of the main object (one click, one wiggle, one anomaly).
+    static readonly (string main, string part, string rename)[] PropMerges =
+    {
+        ("Tub", "Tub Rim", "Bathtub"),
+        ("Bed", "Blanket", null),
+        ("Bed", "Pillows", null),
+        ("Towels", "Towel Rail", null),
+    };
+
+    /// Permanent scenery: not clickable, no wiggle, never an anomaly.
+    static readonly string[] SceneryProps =
+    {
+        "Hook Rail", "Street Lamp L", "Street Lamp R", // balcony
+        "Shower Pipe",                                 // bathroom
+        "Staircase", "Package Rack",                   // hallway
+        "Kitchen Sink Cabinet",                        // kitchen
+        "Desk", "Tv Bench",                            // TV room
+    };
+
+    static void SimplifyProps(Transform world, List<Prop> props, List<Prop> bedProps)
+    {
+        Prop Find(string n)
+        {
+            var p = props.FirstOrDefault(x => x != null && x.name == n);
+            if (p == null) Debug.LogError("[Cozy] Prop not found: " + n);
+            return p;
+        }
+        void Strip(Prop p)
+        {
+            props.Remove(p); bedProps.Remove(p);
+            Object.DestroyImmediate(p);
+        }
+        foreach (var (mainName, partName, rename) in PropMerges)
+        {
+            var main = Find(mainName); var part = Find(partName);
+            if (main == null || part == null) continue;
+            part.transform.SetParent(main.transform, true); // its collider now clicks the main object
+            Strip(part);
+            if (rename != null) main.name = rename;
+        }
+        foreach (var n in SceneryProps)
+        {
+            var p = Find(n);
+            if (p == null) continue;
+            var col = p.GetComponent<Collider2D>();
+            Strip(p);
+            if (col != null) Object.DestroyImmediate(col);
+        }
+    }
 
     /// Drawn anomaly versions from PSD_House_Anomaly (same canvas as PSD_House): house prop name -> anomaly layer.
     static readonly (string prop, string layer)[] HouseAnomalyPairs =
@@ -595,7 +668,8 @@ public static class CozyBuilder
     static FlyerPopup BuildFlyer(Transform ui, Shop shop)
     {
         var layer = Full(ui, "Flyer");
-        var card = Rect(layer, "Flyer Card", new Vector2(560, 20), new Vector2(466, 640));
+        var card = Rect(layer, "Flyer Card", new Vector2(800, -330), new Vector2(466, 640)); // small, bottom-right corner: clear of the arrows and most of the room
+        card.localScale = Vector3.one * 0.55f;
         Img(card, null, new Color(1, 1, 1, 0)); // click target
         var art = Rect(card, "Art", Vector2.zero, new Vector2(932, 1280));
         art.localScale = Vector3.one * 0.5f;
@@ -830,6 +904,28 @@ public static class CozyBuilder
     }
 
     /// Bottom-left room name that fades in for 3 s on every room change.
+    /// TEMPORARY HUD in the top black band: DAY (left) and POINTS (right). Swap for drawn UI later.
+    static void BuildHud(Transform ui)
+    {
+        var root = Full(ui, "HUD (temporary)");
+        RectTransform Box(string name, float x, Vector2 anchor)
+        {
+            var rt = Rect(root, name, Vector2.zero, new Vector2(300, 70));
+            rt.anchorMin = rt.anchorMax = rt.pivot = anchor;
+            rt.anchoredPosition = new Vector2(x, -24f);
+            Img(rt, null, Dark, false);
+            return rt;
+        }
+        var dayBox = Box("Day", 40f, new Vector2(0f, 1f));
+        var pointsBox = Box("Points", -40f, new Vector2(1f, 1f));
+        var hud = root.gameObject.AddComponent<Hud>();
+        hud.dayLabel = Label(dayBox, "Label", "DAY 1", 38, Vector2.zero, dayBox.sizeDelta);
+        hud.pointsLabel = Label(pointsBox, "Label", "POINTS 2", 38, Vector2.zero, pointsBox.sizeDelta);
+        hud.group = root.gameObject.AddComponent<CanvasGroup>();
+        hud.group.blocksRaycasts = false;
+        hud.group.interactable = false;
+    }
+
     static void BuildRoomLabel(Transform ui, RoomCamera rooms)
     {
         var rt = Rect(ui, "Room Label", Vector2.zero, new Vector2(420, 80));
@@ -935,13 +1031,14 @@ public static class CozyBuilder
             if (size >= MinShift) kinds.Add(AnomalyKind.Shift);
             if (size >= MinResize && size <= MaxResize) { kinds.Add(AnomalyKind.Grow); kinds.Add(AnomalyKind.Shrink); }
             if (size >= MinTint && tintChange >= MinTintChange) kinds.Add(AnomalyKind.Tint);
+            if (p.anomalySprite != null) kinds.Clear(); // hand-drawn art only: no tilt/resize/tint on these
             p.allowedKinds = kinds.ToArray();
 
             var room = rooms.FirstOrDefault(r => r.area.Contains(sr.bounds.center))?.name ?? "?";
             bool bought = p.GetComponent<ShopItem>() != null;
             bool box = p.name.StartsWith("Delivery Box");
             string drawn = p.anomalySprite != null ? "**yes**" : "";
-            string procedural = !p.canBeAnomalous ? "never (interactive)" : kinds.Count == 0 ? "none (too small)" : string.Join(", ", kinds);
+            string procedural = !p.canBeAnomalous ? "never (interactive)" : p.anomalySprite != null ? "— (drawn only)" : kinds.Count == 0 ? "none (too small)" : string.Join(", ", kinds);
             string when = bought ? "after buying" : box ? "after a purchase" : "from the start";
             rows.Add($"| {room} | {p.name} | {when} | {drawn} | {procedural} |");
             debug.Add($"{room}/{p.name}: size {size:0.00} tintChange {tintChange:0.00} -> {string.Join(",", kinds)}");
@@ -951,7 +1048,7 @@ public static class CozyBuilder
         {
             "# Anomaly list (generated by CozyBuilder — do not edit by hand)",
             "",
-            "**Drawn** = has hand-drawn anomaly art (shown 90% of the time it's picked).",
+            "**Drawn** = has hand-drawn anomaly art (always used when picked; no procedural changes).",
             "**Procedural** = the changes that are clearly visible on that object; one is picked at random.",
             "Strength grows each day: Day 2 is mild (tilt 7–10°, resize ±15%, small shift), Day 6+ is strong (tilt 14–20°, resize ±30%).",
             "Tint (red) only unlocks from Day 4, even where listed.",

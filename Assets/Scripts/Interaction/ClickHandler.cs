@@ -62,6 +62,8 @@ public class ClickHandler : MonoBehaviour
             if (prop == null || !prop.isActiveAndEnabled) continue;
             var sr = prop.GetComponent<SpriteRenderer>();
             long key = ((long)SortingLayer.GetLayerValueFromID(sr.sortingLayerID) << 32) + sr.sortingOrder;
+            // An anomaly wins over normal objects whose click shapes overlap it (the balcony cup sat under the planter's shape and couldn't be fixed).
+            if (prop.IsAnomalous) key += 1L << 48;
             if (best == null || key > bestKey) { best = prop; bestKey = key; }
         }
         return best;

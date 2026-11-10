@@ -35,6 +35,9 @@ public class FlyerPopup : MonoBehaviour
     [SerializeField] Button flyerButton, closeButton;
     [SerializeField] Shop shop;
     [SerializeField] AudioClip popSound;
+    [Tooltip("Seconds of play before an ignored flyer slides away by itself (it stays in its corner, never blocks the room).")]
+    public float showSeconds = 8f;
+    Coroutine autoHide;
 
     public bool IsOpen => card.gameObject.activeSelf;
     public bool IsAnomalous { get; private set; }
@@ -109,9 +112,24 @@ public class FlyerPopup : MonoBehaviour
         card.gameObject.SetActive(true);
         Sfx.Play(popSound, 0.7f);
         StartCoroutine(UIAnim.SlideY(card, shownY - 1400f, shownY, 0.5f));
+        if (autoHide != null) StopCoroutine(autoHide);
+        autoHide = StartCoroutine(AutoHide());
     }
 
-    public void Hide() => card.gameObject.SetActive(false);
+    public void Hide()
+    {
+        if (autoHide != null) { StopCoroutine(autoHide); autoHide = null; }
+        card.gameObject.SetActive(false);
+    }
+
+    IEnumerator AutoHide()
+    {
+        yield return WaitFreeTime(showSeconds);
+        autoHide = null;
+        yield return UIAnim.SlideY(card, shownY, shownY - 900f, 0.4f);
+        card.gameObject.SetActive(false);
+        card.anchoredPosition = new Vector2(card.anchoredPosition.x, shownY);
+    }
 
     void OnFlyerClicked()
     {

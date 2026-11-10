@@ -53,7 +53,7 @@ The house starts partly empty; buying items on the computer fills it, and the th
 | Mid-day surprises (in a room you're not looking at) | from Day 3: (day − 2) of them, max 4, every 15–35 s | AnomalyDirector |
 | Props with drawn anomaly art | 12× more likely to be picked before Day 5, 4× after; 90% use the drawn version | AnomalyDirector / Prop |
 | Anomaly flyer | from Day 2: 30% +10%/day; clicking it = +1 point, no shop | FlyerPopup |
-| Flyer | Days 1–3: guaranteed once, 5–15 s into the day. Day 4+: (day − 2) chances (max 3), each 15% +10%/day, 12–40 s apart; opens the shop from Day 4 | FlyerPopup |
+| Flyer | Days 1–3: guaranteed once, 5–15 s into the day. Day 4+: (day − 2) chances (max 3), each 15% +10%/day, 12–40 s apart; opens the shop from Day 4. Small, bottom-right corner, never blocks the room; slides away by itself after 8 s of play | FlyerPopup |
 | Room transitions | same-floor neighbours pan (0.45 s); others fade to black 0.3 s, hold 0.15 s, fade in 0.4 s | RoomCamera |
 | Anomaly escalation | mild on Day 2, full strength by Day 6; red tint from Day 4 | AnomalyDirector |
 | Computer reminders | Day 2+: pings every 25–40 s while you have points and haven't opened the shop today | GameManager |
