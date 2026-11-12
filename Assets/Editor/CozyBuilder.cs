@@ -125,6 +125,11 @@ public static class CozyBuilder
         var rooms = HouseRooms(house).Select(r => new Rect(r.x + 0.2f, r.y + 0.2f, r.width - 0.4f, r.height - 0.4f)).ToList();
         var bathroom = Psd(BathroomPsd, world, new Vector3(rooms.Max(r => r.xMax) + 30f, 9f, 0));
         var balcony = Psd(BalconyPsd, world, new Vector3(rooms.Max(r => r.xMax) + 60f, 9f, 0));
+        // Unpack the room PSDs into plain objects straight away: merging pieces (tub rim, towel rail, bed parts) needs
+        // reparenting, which Unity refuses on a linked prefab instance; and overrides on PSD layers break when artists edit them.
+        // Sprites still reference the PSD, so redrawn art keeps updating; re-run this builder after adding/removing/renaming layers.
+        foreach (var psdRoot in new[] { house, bathroom, balcony })
+            PrefabUtility.UnpackPrefabInstance(psdRoot.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
         rooms.Add(LayerBounds(bathroom, "Background"));
         rooms.Add(LayerBounds(balcony, "Background"));
 
@@ -141,8 +146,10 @@ public static class CozyBuilder
         curtainClosed.toggleTo = curtainOpen; curtainOpen.toggleTo = curtainClosed;
         curtainOpen.gameObject.SetActive(false);
         SetupRoomPsd(balcony, BalconyLayers, new[] { "Layer 7", "Layer 6", "Layer 6_1", "Layer 2", "Layer 1", "Background" }, new[] { "Layer 9_1" }, props);
-        // Balcony cup: the lower "Layer 9_1" is its drawn anomaly version (white lines).
-        balcony.Find("Cup").GetComponent<Prop>().anomalySprite = balcony.Find("Layer 9_1").GetComponent<SpriteRenderer>().sprite;
+        // Balcony pot: the plain version is the anomaly, the one with white lines ("Layer 9_1") is normal (checked in game).
+        var cupSr = balcony.Find("Cup").GetComponent<SpriteRenderer>();
+        cupSr.GetComponent<Prop>().anomalySprite = cupSr.sprite;
+        cupSr.sprite = balcony.Find("Layer 9_1").GetComponent<SpriteRenderer>().sprite;
         SimplifyProps(world, props, bedProps);
 
         var itemsRoot = new GameObject("Shop Items").transform;
@@ -254,12 +261,6 @@ public static class CozyBuilder
 
         AssignAnomalyKinds(roomCam.rooms);
 
-        // Unpack the room PSDs into plain objects. As prefab instances, every rename / hide / added component was an
-        // "override" pointing at a PSD layer; if an artist edits the PSD's layers those overrides break and Unity
-        // logs prefab errors. Sprites still reference the PSD, so redrawn art keeps updating; re-run this builder
-        // after adding, removing or renaming layers.
-        foreach (var psdRoot in new[] { house, bathroom, balcony })
-            PrefabUtility.UnpackPrefabInstance(psdRoot.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
 
         EditorSceneManager.SaveScene(scene, ScenePath);
         EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
@@ -300,7 +301,7 @@ public static class CozyBuilder
     /// Permanent scenery: not clickable, no wiggle, never an anomaly.
     static readonly string[] SceneryProps =
     {
-        "Hook Rail", "Street Lamp L", "Street Lamp R", // balcony
+        "Hook Rail",                                   // balcony (street lamps stay clickable: their red tint reads well)
         "Shower Pipe",                                 // bathroom
         "Staircase", "Package Rack",                   // hallway
         "Kitchen Sink Cabinet",                        // kitchen
@@ -1032,6 +1033,7 @@ public static class CozyBuilder
             if (size >= MinResize && size <= MaxResize) { kinds.Add(AnomalyKind.Grow); kinds.Add(AnomalyKind.Shrink); }
             if (size >= MinTint && tintChange >= MinTintChange) kinds.Add(AnomalyKind.Tint);
             if (p.anomalySprite != null) kinds.Clear(); // hand-drawn art only: no tilt/resize/tint on these
+            if (p.name.StartsWith("Street Lamp") && !kinds.Contains(AnomalyKind.Tint)) kinds.Add(AnomalyKind.Tint); // team favourite: red-lit street lamps
             p.allowedKinds = kinds.ToArray();
 
             var room = rooms.FirstOrDefault(r => r.area.Contains(sr.bounds.center))?.name ?? "?";

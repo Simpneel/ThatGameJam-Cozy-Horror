@@ -12,6 +12,8 @@ Tint (red) only unlocks from Day 4, even where listed.
 | Balcony | Delivery Truck | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Balcony | Planter | from the start |  | Tilt, Shift, Grow, Shrink |
 | Balcony | Scissors | from the start |  | Tilt, Shift, Grow, Shrink |
+| Balcony | Street Lamp L | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
+| Balcony | Street Lamp R | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Bathroom | Bath Mat | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
 | Bathroom | Bathtub | from the start |  | Tilt, Shift, Tint |
 | Bathroom | Bottles | from the start |  | Tilt, Shift, Grow, Shrink, Tint |
